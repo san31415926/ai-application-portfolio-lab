@@ -47,3 +47,8 @@
 
 Do not commit `.env` or private API keys.
 
+## Troubleshooting Agreement
+
+When something does not run, check `docs/troubleshooting-rules.md` first.
+
+The rule is: read the error, identify the likely cause, check official docs and GitHub issues when dependencies may have changed, then make the smallest verified fix.

@@ -1,0 +1,187 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [5 0 R 7 0 R] /Count 2 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+4 0 obj
+<< /Length 2695 >>
+stream
+BT
+/F1 11 Tf
+54 740 Td
+(AI Application Engineer Job Description) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Company Background) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(FlowAI is a small software company building internal AI tools for sales, operations, and) Tj
+0 -14 Td
+(customer support teams. The company wants to turn large language models into practical) Tj
+0 -14 Td
+(applications that solve real business problems.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Role Summary) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(We are looking for a junior AI Application Engineer who can build useful LLM-powered) Tj
+0 -14 Td
+(applications. This role focuses on retrieval augmented generation, agent workflows, data) Tj
+0 -14 Td
+(analysis assistants, and simple web applications.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(The engineer does not need to train foundation models from scratch. The main) Tj
+0 -14 Td
+(responsibility is to connect models, data, tools, and user interfaces into reliable) Tj
+0 -14 Td
+(products.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Responsibilities) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- Build RAG applications for PDF, Markdown, and internal knowledge base documents.) Tj
+0 -14 Td
+(- Use embeddings and vector databases to retrieve relevant context.) Tj
+0 -14 Td
+(- Design prompts that make model outputs clear, grounded, and useful.) Tj
+0 -14 Td
+(- Build simple agent workflows that can call tools such as search, file readers, and) Tj
+0 -14 Td
+(data analysis functions.) Tj
+0 -14 Td
+(- Create Streamlit or web-based demos for non-technical users.) Tj
+0 -14 Td
+(- Evaluate answers by checking source documents, relevance, and hallucination risk.) Tj
+0 -14 Td
+(- Write clean documentation so teammates can run and understand the project.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Required Skills) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- Basic Python programming.) Tj
+0 -14 Td
+(- Familiarity with LangChain or similar LLM application frameworks.) Tj
+0 -14 Td
+(- Understanding of RAG concepts: chunking, embeddings, vector stores, retrievers,) Tj
+0 -14 Td
+(prompts, and generation.) Tj
+0 -14 Td
+(- Basic knowledge of APIs, environment variables, and Git.) Tj
+0 -14 Td
+(- Ability to debug errors step by step.) Tj
+0 -14 Td
+(- Clear communication and willingness to learn.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Nice To Have) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- Experience with Streamlit, FastAPI, or simple frontend development.) Tj
+0 -14 Td
+(- Experience with Chroma, FAISS, Pinecone, or other vector databases.) Tj
+0 -14 Td
+(- Knowledge of NLP, neural networks, and deep learning basics.) Tj
+0 -14 Td
+(- Experience building AI agents with tool calling.) Tj
+0 -14 Td
+(- Ability to turn business requirements into small working prototypes.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Example Interview Questions) Tj
+ET
+endstream
+endobj
+5 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 4 0 R >>
+endobj
+6 0 obj
+<< /Length 1206 >>
+stream
+BT
+/F1 11 Tf
+54 740 Td
+() Tj
+0 -14 Td
+(1. What problem does RAG solve?) Tj
+0 -14 Td
+(2. Why do we split documents into chunks?) Tj
+0 -14 Td
+(3. What is the difference between embeddings and prompts?) Tj
+0 -14 Td
+(4. How do you reduce hallucination in a document QA system?) Tj
+0 -14 Td
+(5. How would you evaluate whether a retrieved document chunk is relevant?) Tj
+0 -14 Td
+(6. How would you explain your AI application project to a non-technical user?) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Project Assignment) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Build a small AI Job Description Knowledge Base. The user can upload job descriptions) Tj
+0 -14 Td
+(and learning notes, then ask questions such as:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- What skills does this role require?) Tj
+0 -14 Td
+(- Which skills are most important for a beginner?) Tj
+0 -14 Td
+(- What should I learn first?) Tj
+0 -14 Td
+(- What project can I build for my resume?) Tj
+0 -14 Td
+(- What interview questions should I prepare?) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(The answer should cite the relevant source text when possible. If the document does not) Tj
+0 -14 Td
+(contain enough information, the system should say that it cannot find enough evidence.) Tj
+0 -14 Td
+() Tj
+ET
+endstream
+endobj
+7 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 6 0 R >>
+endobj
+xref
+0 8
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000121 00000 n 
+0000000191 00000 n 
+0000002938 00000 n 
+0000003064 00000 n 
+0000004322 00000 n 
+trailer
+<< /Size 8 /Root 1 0 R >>
+startxref
+4448
+%%EOF

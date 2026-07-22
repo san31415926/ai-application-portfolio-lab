@@ -1,0 +1,87 @@
+# Project Ideas
+
+## 1. AI Job Description Knowledge Base
+
+把普通的 `Chat with PDF` 改造成 AI 求职资料问答助手。
+
+可上传内容：
+
+- AI 应用工程师 JD
+- LangChain 学习笔记
+- RAG 相关文章
+- 自己的项目 README
+
+创新点：
+
+- 回答时附带来源片段。
+- 输出“这条要求对应我该补什么技能”。
+- 支持生成面试复习清单。
+
+## 2. Resume Project Coach
+
+把 RAG 和 Agent 结合，做一个简历项目教练。
+
+输入：
+
+- 目标岗位 JD
+- 自己的项目说明
+- 技术栈清单
+
+输出：
+
+- 项目亮点
+- 技术难点
+- 面试追问
+- 改进建议
+
+创新点：
+
+- 不是简单问答，而是围绕求职场景给建议。
+- 后续可以接入多 Agent：JD 分析 Agent、项目包装 Agent、面试官 Agent。
+
+## 3. Dataset Insight Agent
+
+把数据分析 Agent 改造成业务洞察助手。
+
+输入：
+
+- CSV / Excel 数据
+
+输出：
+
+- 字段解释
+- 统计摘要
+- 异常点
+- 趋势图
+- 自然语言结论
+
+创新点：
+
+- 面向非技术用户。
+- 支持自动生成图表和结论。
+- 可以做成 Streamlit 应用。
+
+## 4. Competitor Research Agent
+
+把 Web Research Agent 改造成竞品分析助手。
+
+输入：
+
+- 产品名
+- 公司名
+- 研究主题
+
+输出：
+
+- 产品定位
+- 功能对比
+- 优势劣势
+- 机会点
+- 来源链接
+
+创新点：
+
+- 多步骤搜索和总结。
+- 最终生成 Markdown 报告。
+- 很适合简历展示。
+

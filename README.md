@@ -52,3 +52,7 @@ Do not commit `.env` or private API keys.
 When something does not run, check `docs/troubleshooting-rules.md` first.
 
 The rule is: read the error, identify the likely cause, check official docs and GitHub issues when dependencies may have changed, then make the smallest verified fix.
+
+## Collaboration Notes
+
+Long-term project preferences are recorded in `docs/collaboration-rules.md`.

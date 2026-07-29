@@ -248,6 +248,10 @@ a {
   padding: 16px;
 }
 
+.query-panel > .sources-panel {
+  margin-top: 12px;
+}
+
 .panel-header {
   display: flex;
   align-items: center;

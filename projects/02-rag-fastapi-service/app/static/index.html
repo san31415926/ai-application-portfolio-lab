@@ -90,6 +90,13 @@
             <div class="answer-status" id="answer-status">待查询</div>
             <pre id="answer-output">未查询</pre>
           </div>
+          <div class="sources-panel" id="sources-panel">
+            <div class="panel-header">
+              <h3>来源片段</h3>
+              <span id="source-count">0 条来源</span>
+            </div>
+            <div class="source-list" id="source-list"></div>
+          </div>
         </section>
 
         <section class="notebook-panel">
@@ -151,14 +158,6 @@
             </div>
             <div class="document-list" id="document-list"></div>
           </div>
-
-          <div class="sources-panel">
-            <div class="panel-header">
-              <h3>来源片段</h3>
-              <span id="source-count">0 条来源</span>
-            </div>
-            <div class="source-list" id="source-list"></div>
-          </div>
         </section>
 
         <section class="chunks-panel" id="chunks-panel" hidden>
@@ -172,6 +171,6 @@
     </main>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
-    <script src="./app.js?v=source-links"></script>
+    <script src="./app.js?v=sources-near-answer"></script>
   </body>
 </html>

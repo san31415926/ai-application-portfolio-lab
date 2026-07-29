@@ -198,6 +198,19 @@ class RagFastApiServiceTest(unittest.TestCase):
             "变量是给数据起名字的方式。",
         )
 
+    def test_qwen3_cleanup_rejects_early_draft_marker(self) -> None:
+        raw = "FINAL_ANSWER: 当然，只输出最终答案。\n\n问题分析和关键点仍在继续。"
+        generator = OllamaAnswerGenerator("qwen3:4b")
+        self.assertEqual(generator._extract_qwen3_answer(raw), "")
+
+    def test_qwen3_cleanup_accepts_late_final_section(self) -> None:
+        raw = "内部分析。" * 40 + "FINAL_ANSWER: C语言变量用于存储数据，声明时需要指定类型。[来源1]"
+        generator = OllamaAnswerGenerator("qwen3:4b")
+        self.assertEqual(
+            generator._extract_qwen3_answer(raw),
+            "C语言变量用于存储数据，声明时需要指定类型。[来源1]",
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

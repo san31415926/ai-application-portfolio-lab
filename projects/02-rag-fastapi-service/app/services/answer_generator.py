@@ -12,8 +12,11 @@ from app.core.config import (
     RAG_GENERATION_BACKEND,
     RAG_LOCAL_CHAT_MODEL,
     RAG_MAX_CONTEXT_CHARS,
+    RAG_MAX_GENERATION_TOKENS,
 )
 from app.schemas import SourceChunk
+
+FINAL_ANSWER_MARKER = "FINAL_ANSWER:"
 
 
 class OllamaAnswerGenerator:
@@ -48,13 +51,14 @@ class OllamaAnswerGenerator:
                         "/no_think\n"
                         "请直接输出给用户看的最终答案，不要分析问题，不要复述任务规则，"
                         "不要列出参考资料筛选过程。回答控制在 2 到 4 句话，并在相关结论后"
-                        f"标注来源编号。\n\n问题：{query}\n\n参考资料：\n{context}"
+                        f"标注来源编号。完成后必须输出 {FINAL_ANSWER_MARKER}，标记后只保留最终答案。"
+                        f"\n\n问题：{query}\n\n参考资料：\n{context}"
                     ),
                 },
             ],
             "stream": False,
             "think": False,
-            "options": {"temperature": 0.1, "num_predict": 768},
+            "options": {"temperature": 0.1, "num_predict": RAG_MAX_GENERATION_TOKENS},
             "keep_alive": "10m",
         }
         result = self._request_chat(payload)
@@ -62,7 +66,7 @@ class OllamaAnswerGenerator:
         answer = result.get("message", {}).get("content", "").strip()
         if not answer:
             answer = result.get("response", "").strip()
-        answer = self._extract_final_answer(answer)
+        answer = self._extract_qwen3_answer(answer) if self._requires_reasoning_cleanup() else self._extract_final_answer(answer)
         if not answer:
             raise RuntimeError("Ollama 没有返回最终答案")
         answer = re.sub(r"\s*来源\d+\s*$", "", answer).strip()
@@ -89,13 +93,14 @@ class OllamaAnswerGenerator:
                         "/no_think\n"
                         "请直接输出给用户看的最终答案，不要分析问题，不要复述任务规则，"
                         "不要列出参考资料筛选过程。回答控制在 2 到 4 句话，并在相关结论后"
-                        f"标注来源编号。\n\n问题：{query}\n\n参考资料：\n{context}"
+                        f"标注来源编号。完成后必须输出 {FINAL_ANSWER_MARKER}，标记后只保留最终答案。"
+                        f"\n\n问题：{query}\n\n参考资料：\n{context}"
                     ),
                 },
             ],
             "stream": True,
             "think": False,
-            "options": {"temperature": 0.1, "num_predict": 768},
+            "options": {"temperature": 0.1, "num_predict": RAG_MAX_GENERATION_TOKENS},
             "keep_alive": "10m",
         }
         request = Request(
@@ -106,6 +111,8 @@ class OllamaAnswerGenerator:
         )
         try:
             with urlopen(request, timeout=self.timeout) as response:
+                hide_reasoning = self._requires_reasoning_cleanup()
+                raw_answer = ""
                 for raw_line in response:
                     if not raw_line.strip():
                         continue
@@ -113,8 +120,19 @@ class OllamaAnswerGenerator:
                     message = event.get("message") or {}
                     chunk = message.get("content", "") or event.get("response", "")
                     if chunk:
-                        yield str(chunk)
+                        chunk = str(chunk)
+                        if not hide_reasoning:
+                            yield chunk
+                        else:
+                            raw_answer += chunk
                     if event.get("done"):
+                        if hide_reasoning:
+                            answer = self._extract_qwen3_answer(raw_answer)
+                            if not answer:
+                                raise RuntimeError(
+                                    "qwen3 在输出上限内没有生成最终答案，已切换为检索结果"
+                                )
+                            yield answer
                         break
         except (HTTPError, URLError, TimeoutError, OSError, json.JSONDecodeError) as exc:
             raise RuntimeError(f"Ollama 流式回答不可用：{exc}") from exc
@@ -157,14 +175,14 @@ class OllamaAnswerGenerator:
             ],
             "stream": False,
             "think": False,
-            "options": {"temperature": 0.3, "num_predict": 768},
+            "options": {"temperature": 0.3, "num_predict": RAG_MAX_GENERATION_TOKENS},
             "keep_alive": "10m",
         }
         result = self._request_chat(payload)
         answer = result.get("message", {}).get("content", "").strip()
         if not answer:
             answer = result.get("response", "").strip()
-        answer = self._extract_final_answer(answer)
+        answer = self._extract_qwen3_answer(answer) if self._requires_reasoning_cleanup() else self._extract_final_answer(answer)
         if not answer:
             raise RuntimeError("Ollama 没有返回写作辅助内容")
         return answer
@@ -174,7 +192,7 @@ class OllamaAnswerGenerator:
         """Hide Qwen3 reasoning when an older Ollama template mixes it into content."""
         if not raw_answer:
             return ""
-        markers = ("最终答案：", "最终答案:")
+        markers = (FINAL_ANSWER_MARKER, "最终答案：", "最终答案:")
         marker_positions = [raw_answer.rfind(marker) for marker in markers]
         marker_position = max(marker_positions)
         if marker_position >= 0:
@@ -185,6 +203,42 @@ class OllamaAnswerGenerator:
         if "<think>" in raw_answer or raw_answer.startswith(("首先", "我需要", "用户的问题")):
             return ""
         return re.sub(r"</?think>", "", raw_answer).strip()
+
+    def _requires_reasoning_cleanup(self) -> bool:
+        return self.model_name.lower().startswith("qwen3")
+
+    @classmethod
+    def _extract_qwen3_answer(cls, raw_answer: str) -> str:
+        """Accept only a short final section from Qwen3's mixed reasoning output."""
+        if not raw_answer:
+            return ""
+        marker_position = raw_answer.rfind(FINAL_ANSWER_MARKER)
+        if marker_position < 0:
+            return ""
+        if marker_position < len(raw_answer) * 0.65:
+            return ""
+        candidate = raw_answer[marker_position + len(FINAL_ANSWER_MARKER) :]
+        candidate = re.split(r"\n\s*\n", candidate, maxsplit=1)[0]
+        candidate = candidate.strip().strip('"“”')
+        if not candidate or len(candidate) > 1200:
+            return ""
+        reasoning_signals = (
+            "首先",
+            "我需要",
+            "用户的问题",
+            "关键点",
+            "可能的回答",
+            "草拟",
+            "参考资料",
+            "最终决定",
+            "只输出",
+            FINAL_ANSWER_MARKER,
+        )
+        if any(signal in candidate for signal in reasoning_signals):
+            return ""
+        if not re.search(r"[。！？.!?]|\[来源\d+\]", candidate):
+            return ""
+        return candidate
 
     @staticmethod
     def _build_context(sources: list[SourceChunk]) -> str:

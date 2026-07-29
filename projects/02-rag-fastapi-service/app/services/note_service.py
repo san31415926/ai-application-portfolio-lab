@@ -224,15 +224,44 @@ class NoteService:
         if note is None:
             return None
         sources = self.related_sources(note_id, top_k=3) or []
+        model_result = self._assist_with_model(note, mode, sources)
+        answer_backend = "ollama" if model_result else "extractive"
+        answer_model = getattr(rag_service.answer_generator, "model_name", None) if model_result else None
+        result = model_result
+        if result is None:
+            result = self._fallback_assist(note, mode, sources)
+        return WritingAssistResponse(
+            mode=mode,
+            result=result,
+            related_sources=sources,
+            answer_backend=answer_backend,
+            answer_model=answer_model,
+        )
+
+    def _assist_with_model(
+        self,
+        note: NoteRecord,
+        mode: str,
+        sources: list[SourceChunk],
+    ) -> str | None:
+        generator = rag_service.answer_generator
+        generate = getattr(generator, "generate_writing_assist", None) if generator else None
+        if generate is None:
+            return None
+        try:
+            return generate(mode, note.title, note.content, sources)
+        except RuntimeError:
+            return None
+
+    def _fallback_assist(self, note: NoteRecord, mode: str, sources: list[SourceChunk]) -> str:
         if mode == "summary":
-            result = self._summary(note, sources)
+            return self._summary(note, sources)
         elif mode == "continue":
-            result = self._continue(note, sources)
+            return self._continue(note, sources)
         elif mode == "action_items":
-            result = self._action_items(note, sources)
+            return self._action_items(note, sources)
         else:
-            result = self._tags(note, sources)
-        return WritingAssistResponse(mode=mode, result=result, related_sources=sources)
+            return self._tags(note, sources)
 
     def due_reviews(self) -> list[NoteInfo]:
         now = utc_now()

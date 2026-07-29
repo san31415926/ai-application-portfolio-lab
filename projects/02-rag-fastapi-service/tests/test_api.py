@@ -144,6 +144,40 @@ class RagFastApiServiceTest(unittest.TestCase):
         self.assertEqual(search_response.status_code, 200)
         self.assertEqual(search_response.json()["data"][0]["note_id"], note_id)
 
+    def test_writing_assist_uses_local_chat_generator(self) -> None:
+        note_response = self.client.post(
+            "/api/v1/notes",
+            json={
+                "title": "Embedding 学习笔记",
+                "content": "Embedding 可以把文本转换成向量，用于相似度检索。",
+                "tags": ["Embedding", "RAG"],
+                "category": "AI 学习",
+            },
+        )
+        note_id = note_response.json()["data"]["note_id"]
+
+        class StubGenerator:
+            model_name = "qwen2.5:3b"
+
+            @staticmethod
+            def generate_writing_assist(mode, title, content, sources):
+                return f"模型生成：{mode}：{title}"
+
+        previous_generator = rag_service.answer_generator
+        rag_service.answer_generator = StubGenerator()
+        try:
+            response = self.client.post(
+                f"/api/v1/notes/{note_id}/assist",
+                json={"mode": "summary"},
+            )
+        finally:
+            rag_service.answer_generator = previous_generator
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["data"]["answer_backend"], "ollama")
+        self.assertEqual(response.json()["data"]["answer_model"], "qwen2.5:3b")
+        self.assertIn("模型生成", response.json()["data"]["result"])
+
     def test_qwen_reasoning_cleanup(self) -> None:
         raw = "<think>内部分析</think>\n最终答案：变量是给数据起名字的方式。\n\n后续分析"
         self.assertEqual(

@@ -94,3 +94,5 @@ class WritingAssistResponse(BaseModel):
     mode: str
     result: str
     related_sources: list[SourceChunk]
+    answer_backend: str = "extractive"
+    answer_model: str | None = None

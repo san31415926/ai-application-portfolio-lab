@@ -21,6 +21,7 @@ const elements = {
   chunksList: document.querySelector("#chunks-list"),
   answerStatus: document.querySelector("#answer-status"),
   answerOutput: document.querySelector("#answer-output"),
+  assistStatus: document.querySelector("#assist-status"),
   assistOutput: document.querySelector("#assist-output"),
   queryInput: document.querySelector("#query-input"),
   topK: document.querySelector("#top-k"),
@@ -30,6 +31,7 @@ const elements = {
   noteTags: document.querySelector("#note-tags"),
   noteContent: document.querySelector("#note-content"),
   assistMode: document.querySelector("#assist-mode"),
+  assistButton: document.querySelector("#assist-button"),
   toast: document.querySelector("#toast"),
 };
 
@@ -420,13 +422,24 @@ async function assistWriting() {
     showToast("未选择笔记");
     return;
   }
-  const payload = await api(`/api/v1/notes/${activeNoteId}/assist`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json; charset=utf-8" },
-    body: JSON.stringify({ mode: elements.assistMode.value }),
-  });
-  elements.assistOutput.textContent = payload.data.result;
-  renderSources(payload.data.related_sources || []);
+  elements.assistButton.disabled = true;
+  elements.assistButton.textContent = "模型生成中...";
+  elements.assistStatus.textContent = "正在调用 qwen2.5:3b";
+  try {
+    const payload = await api(`/api/v1/notes/${activeNoteId}/assist`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json; charset=utf-8" },
+      body: JSON.stringify({ mode: elements.assistMode.value }),
+    });
+    elements.assistOutput.textContent = payload.data.result;
+    elements.assistStatus.textContent = payload.data.answer_model
+      ? `本地模型：${payload.data.answer_model}`
+      : "规则降级结果";
+    renderSources(payload.data.related_sources || []);
+  } finally {
+    elements.assistButton.disabled = false;
+    elements.assistButton.textContent = "写作辅助";
+  }
 }
 
 async function completeReview(noteId) {

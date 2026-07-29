@@ -211,6 +211,43 @@ class RagFastApiServiceTest(unittest.TestCase):
             "C语言变量用于存储数据，声明时需要指定类型。[来源1]",
         )
 
+    def test_stream_answer_passes_all_sources_and_numbers_fallback_refs(self) -> None:
+        captured_sources = []
+
+        class StubGenerator:
+            name = "ollama"
+            model_name = "test-model"
+
+            @staticmethod
+            def generate_stream(query, sources):
+                captured_sources.extend(sources)
+                yield "回答内容"
+
+        sources = [
+            {
+                "chunk_id": "chunk-1",
+                "document_id": "doc-1",
+                "filename": "one.md",
+                "chunk_index": 1,
+                "score": 0.9,
+                "content": "第一条资料",
+            },
+            {
+                "chunk_id": "chunk-2",
+                "document_id": "doc-2",
+                "filename": "two.md",
+                "chunk_index": 1,
+                "score": 0.8,
+                "content": "第二条资料",
+            },
+        ]
+        from app.schemas import SourceChunk
+
+        source_models = [SourceChunk(**source) for source in sources]
+        events = list(rag_service._stream_answer("问题", source_models, StubGenerator()))
+        self.assertEqual([source.filename for source in captured_sources], ["one.md", "two.md"])
+        self.assertIn("[来源1] [来源2]", "".join(event.get("text", "") for event in events))
+
 
 if __name__ == "__main__":
     unittest.main()

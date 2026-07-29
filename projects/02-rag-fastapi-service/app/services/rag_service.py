@@ -96,7 +96,7 @@ class RagService:
         generator = self._select_generator(chat_model)
         if generator is not None:
             try:
-                answer = generator.generate(query, sources[:1])
+                answer = generator.generate(query, sources)
                 answer_backend = generator.name
                 answer_model = generator.model_name
             except RuntimeError:
@@ -176,13 +176,16 @@ class RagService:
                 try:
                     emitted = False
                     full_answer = ""
-                    for chunk in generate_stream(query, sources[:1]):
+                    for chunk in generate_stream(query, sources):
                         emitted = True
                         full_answer += chunk
                         yield {"type": "delta", "text": chunk}
                     if emitted:
                         if "[来源" not in full_answer:
-                            yield {"type": "delta", "text": "\n\n[来源1]"}
+                            source_refs = " ".join(
+                                f"[来源{index}]" for index in range(1, len(sources) + 1)
+                            )
+                            yield {"type": "delta", "text": f"\n\n{source_refs}"}
                         yield {
                             "type": "done",
                             "refused": False,

@@ -31,6 +31,7 @@ projects/02-rag-fastapi-service/
 - `GET /api/v1/knowledge/documents/{document_id}/chunks`：查看切片
 - `POST /api/v1/chat/query`：执行 RAG 问答并返回来源片段
 - `POST /api/v1/chat/query/stream`：以 SSE 流式返回检索状态、答案片段和完成状态
+- 来源文件名可点击查看完整文档切片，并自动定位到本次命中的原文段落
 - `GET /api/v1/models`：发现本机已安装的 Ollama 生成模型
 - `POST /api/v1/notes`：创建笔记
 - `GET /api/v1/notes`：查看笔记列表

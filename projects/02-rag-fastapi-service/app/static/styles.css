@@ -506,6 +506,28 @@ a {
   margin-bottom: 8px;
 }
 
+.source-link {
+  min-height: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--blue);
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+}
+
+.source-link:hover,
+.source-link:focus-visible {
+  text-decoration: underline;
+}
+
+.chunk-card.selected {
+  border-color: var(--teal);
+  background: var(--green-soft);
+  box-shadow: 0 0 0 2px rgba(15, 118, 110, 0.12);
+}
+
 .score {
   border-radius: 8px;
   background: var(--green-soft);

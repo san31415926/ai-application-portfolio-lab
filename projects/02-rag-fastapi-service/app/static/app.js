@@ -174,9 +174,13 @@ function renderSources(sources) {
     card.className = "source-card";
 
     const header = window.document.createElement("header");
-    const title = window.document.createElement("p");
-    title.className = "card-title";
+    const title = window.document.createElement("button");
+    title.className = "source-link card-title";
     title.textContent = `${source.filename} · 第 ${source.chunk_index} 段`;
+    title.type = "button";
+    title.title = "打开原文切片";
+    title.setAttribute("aria-label", `打开 ${source.filename} 第 ${source.chunk_index} 段原文`);
+    title.addEventListener("click", () => showSourceChunk(source));
     const score = window.document.createElement("span");
     score.className = "score";
     score.textContent = source.score.toFixed(4);
@@ -494,13 +498,22 @@ async function completeReview(noteId) {
   showToast("已记录回顾");
 }
 
-async function showChunks(doc) {
+async function showSourceChunk(source) {
+  await showChunks(source, source.chunk_index);
+  showToast(`已打开 ${source.filename} 第 ${source.chunk_index} 段原文`);
+}
+
+async function showChunks(doc, selectedChunkIndex = null) {
   const payload = await api(`/api/v1/knowledge/documents/${doc.document_id}/chunks`);
   elements.chunksTitle.textContent = `${doc.filename} · 文档切片`;
   elements.chunksList.replaceChildren();
+  let selectedCard = null;
   (payload.data || []).forEach((chunk) => {
     const card = window.document.createElement("article");
-    card.className = "chunk-card";
+    card.className = selectedChunkIndex === chunk.chunk_index ? "chunk-card selected" : "chunk-card";
+    if (selectedChunkIndex === chunk.chunk_index) {
+      selectedCard = card;
+    }
     const title = window.document.createElement("p");
     title.className = "card-title";
     title.textContent = `第 ${chunk.chunk_index} 段`;
@@ -512,6 +525,9 @@ async function showChunks(doc) {
   });
   elements.chunksPanel.hidden = false;
   elements.chunksPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+  if (selectedCard) {
+    selectedCard.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
 }
 
 async function deleteDocument(documentId) {

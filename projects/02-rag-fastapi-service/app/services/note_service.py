@@ -6,6 +6,7 @@ from collections import Counter
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
 
+from app.core.config import SAMPLE_DIR
 from app.schemas import NoteCreate, NoteInfo, NoteUpdate, SourceChunk, WritingAssistResponse
 from app.services.rag_service import rag_service
 from app.services.retriever import tokenize
@@ -44,12 +45,50 @@ def split_sentences(text: str) -> list[str]:
     return [part.strip() for part in re.split(r"(?<=[。！？.!?])\s+|\n+", text) if part.strip()]
 
 
+def sample_category(sample_number: int) -> str:
+    if sample_number <= 100:
+        return "生活百科"
+    if sample_number <= 130:
+        return "Python 与 FastAPI"
+    if sample_number <= 143:
+        return "C 语言与算法"
+    if sample_number <= 150:
+        return "SQL 数据库"
+    if sample_number <= 160:
+        return "Git、Linux 与 Docker"
+    if sample_number <= 170:
+        return "前端开发"
+    if sample_number <= 178:
+        return "测试与服务工程"
+    if sample_number <= 186:
+        return "数据分析"
+    return "RAG 与本地 AI"
+
+
+def sample_note_payload(path) -> NoteCreate:
+    raw_text = path.read_text(encoding="utf-8").strip()
+    first_line, separator, remaining = raw_text.partition("\n")
+    title = first_line.removeprefix("#").strip() or path.stem
+    content = (remaining if separator else raw_text).strip()
+    number = int(path.stem.split("_")[1])
+    category = sample_category(number)
+    tags = clean_tags([category, title, "教程笔记", path.stem])
+    return NoteCreate(
+        title=title[:120],
+        content=(content or title)[:8000],
+        tags=tags,
+        category=category,
+    )
+
+
 class NoteService:
     def __init__(self) -> None:
         self.notes: dict[str, NoteRecord] = {}
+        self._samples_loaded = False
 
     def clear(self) -> None:
         self.notes.clear()
+        self._samples_loaded = False
 
     def create(self, payload: NoteCreate) -> NoteInfo:
         now = utc_now()
@@ -67,7 +106,7 @@ class NoteService:
         return self._to_info(note)
 
     def load_samples(self) -> list[NoteInfo]:
-        if self.notes:
+        if self._samples_loaded:
             return []
         samples = [
             NoteCreate(
@@ -116,9 +155,14 @@ class NoteService:
                 ),
             ),
         ]
+        samples.extend(
+            sample_note_payload(path)
+            for path in sorted(SAMPLE_DIR.glob("kb_*.md"))
+        )
         created = [self.create(sample) for sample in samples]
         for note_info in created[:2]:
             self.notes[note_info.note_id].next_review_at = utc_now() - timedelta(minutes=1)
+        self._samples_loaded = True
         return [self._to_info(self.notes[note.note_id]) for note in created]
 
     def list_notes(self) -> list[NoteInfo]:

@@ -103,6 +103,20 @@ class RagFastApiServiceTest(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.json()["refused"])
 
+    def test_sample_notes_import_tutorial_library_once(self) -> None:
+        response = self.client.post("/api/v1/notes/samples")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()["data"]), 205)
+        self.assertTrue(any("Docker" in note["title"] for note in response.json()["data"]))
+
+        duplicate_response = self.client.post("/api/v1/notes/samples")
+        self.assertEqual(duplicate_response.status_code, 200)
+        self.assertEqual(len(duplicate_response.json()["data"]), 0)
+
+        stats_response = self.client.get("/api/v1/notes/stats")
+        self.assertEqual(stats_response.status_code, 200)
+        self.assertEqual(stats_response.json()["data"]["note_count"], 205)
+
     def test_notebook_notes_and_related_sources(self) -> None:
         self.client.post("/api/v1/knowledge/documents/samples")
 

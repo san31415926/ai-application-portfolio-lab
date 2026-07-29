@@ -20,7 +20,7 @@
 
 - 编程：Python、文件解析、命令行工作流
 - AI/LLM：RAG 流程、文本切分、Ollama 本地 Embedding 检索、来源约束的 Qwen 生成、来源引用、低置信度拒答、生成降级、笔记关联检索
-- 数据：Markdown/TXT/PDF 入库、自建 LearningHub 教程库、27 份 Markdown 学习文档
+- 数据：Markdown/TXT/PDF 入库、自建 LearningHub 教程库、227 份 Markdown 学习文档和 205 条学习笔记
 - Web/后端：FastAPI、REST API 设计、OpenAPI 文档、中文静态 Notebook 工作台、路由与服务分层
 - 工具：Git、`.env.example`、依赖管理、排错文档
 
@@ -38,7 +38,7 @@
 - 教育经历：
 - 工作经历：
 - 证书：
-- 已验证成果：`projects/02-rag-fastapi-service` 使用 Ollama 的 `embeddinggemma:300m` 生成 768 维检索向量，并使用可选择的本地聊天模型生成有来源约束的中文回答，同时保留稀疏检索和提取式回答降级。项目包含 27 份 Markdown 教程、5 条示例笔记、来源引用、低置信度拒答、批量建索引、笔记工作流、模型发现、OpenAPI 文档和 7 项通过的 API 测试。本地冒烟测试约 6 秒完成 27 份文档建索引，使用 `qwen2.5:3b` 回答了 C 语言问题，并正确拒绝了无关的火星条约问题。早期原型已成功读取示例岗位 JD PDF，本地 JD 知识库可以索引默认文档，SQLite 模拟数据库包含 5 个岗位和 16 项技能，8 项测试通过。
+- 已验证成果：`projects/02-rag-fastapi-service` 使用 Ollama 的 `embeddinggemma:300m` 生成 768 维检索向量，并使用可选择的本地聊天模型生成有来源约束的中文回答，同时保留稀疏检索和提取式回答降级。项目包含 227 份 Markdown 教程、205 条可搜索学习笔记、来源引用、低置信度拒答、批量建索引、笔记工作流、模型发现、OpenAPI 文档和 8 项通过的 API 测试。使用 `qwen2.5:3b` 回答了 C 语言问题，并正确拒绝了无关的火星条约问题。早期原型已成功读取示例岗位 JD PDF，本地 JD 知识库可以索引默认文档，SQLite 模拟数据库包含 5 个岗位和 16 项技能，8 项测试通过。
 - 链接：
 
 ## 写作偏好

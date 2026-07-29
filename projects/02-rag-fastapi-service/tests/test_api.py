@@ -78,6 +78,19 @@ class RagFastApiServiceTest(unittest.TestCase):
         self.assertIn("番茄", chinese_payload["answer"])
         self.assertEqual(chinese_payload["sources"][0]["filename"], "cooking_tomato_egg_zh.md")
 
+    def test_stream_query_returns_progress_events(self) -> None:
+        self.client.post("/api/v1/knowledge/documents/samples")
+        response = self.client.post(
+            "/api/v1/chat/query/stream",
+            json={"query": "C 语言中的变量怎么理解？", "top_k": 3},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.headers["content-type"].startswith("text/event-stream"))
+        self.assertIn('"type": "meta"', response.text)
+        self.assertTrue('"type": "delta"' in response.text or '"type": "replace"' in response.text)
+        self.assertIn('"type": "done"', response.text)
+        self.assertIn("c_language_basics_zh.md", response.text)
+
     def test_upload_document_and_list_chunks(self) -> None:
         response = self.client.post(
             "/api/v1/knowledge/documents/upload",

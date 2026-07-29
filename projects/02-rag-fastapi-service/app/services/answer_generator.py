@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import re
+from collections.abc import Iterator
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
@@ -68,6 +69,55 @@ class OllamaAnswerGenerator:
         if "[来源" not in answer:
             answer += "\n\n" + " ".join(f"[来源{index}]" for index in range(1, len(sources) + 1))
         return answer
+
+    def generate_stream(self, query: str, sources: list[SourceChunk]) -> Iterator[str]:
+        context = self._build_context(sources)
+        payload = {
+            "model": self.model_name,
+            "messages": [
+                {
+                    "role": "system",
+                    "content": (
+                        "你是 LearningHub 的学习助理。严格遵守以下规则：只根据参考资料回答，"
+                        "不得补充资料中没有的事实；直接回答问题，控制在 2 到 4 句话；"
+                        "在相关结论后标注 [来源1] 这类编号；不要输出思考过程。"
+                    ),
+                },
+                {
+                    "role": "user",
+                    "content": (
+                        "/no_think\n"
+                        "请直接输出给用户看的最终答案，不要分析问题，不要复述任务规则，"
+                        "不要列出参考资料筛选过程。回答控制在 2 到 4 句话，并在相关结论后"
+                        f"标注来源编号。\n\n问题：{query}\n\n参考资料：\n{context}"
+                    ),
+                },
+            ],
+            "stream": True,
+            "think": False,
+            "options": {"temperature": 0.1, "num_predict": 768},
+            "keep_alive": "10m",
+        }
+        request = Request(
+            f"{self.base_url}/api/chat",
+            data=json.dumps(payload, ensure_ascii=False).encode("utf-8"),
+            headers={"Content-Type": "application/json"},
+            method="POST",
+        )
+        try:
+            with urlopen(request, timeout=self.timeout) as response:
+                for raw_line in response:
+                    if not raw_line.strip():
+                        continue
+                    event = json.loads(raw_line.decode("utf-8"))
+                    message = event.get("message") or {}
+                    chunk = message.get("content", "") or event.get("response", "")
+                    if chunk:
+                        yield str(chunk)
+                    if event.get("done"):
+                        break
+        except (HTTPError, URLError, TimeoutError, OSError, json.JSONDecodeError) as exc:
+            raise RuntimeError(f"Ollama 流式回答不可用：{exc}") from exc
 
     def generate_writing_assist(
         self,

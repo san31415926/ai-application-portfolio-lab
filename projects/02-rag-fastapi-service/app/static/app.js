@@ -32,6 +32,7 @@ const elements = {
   noteContent: document.querySelector("#note-content"),
   assistMode: document.querySelector("#assist-mode"),
   assistButton: document.querySelector("#assist-button"),
+  queryButton: document.querySelector("#query-form button[type='submit']"),
   toast: document.querySelector("#toast"),
 };
 
@@ -326,26 +327,71 @@ async function queryKnowledge(event) {
     return;
   }
 
+  elements.queryButton.disabled = true;
+  elements.queryButton.textContent = "生成中...";
   elements.answerStatus.textContent = "检索中";
   elements.answerStatus.className = "answer-status";
   elements.answerOutput.textContent = "";
 
-  const payload = await api("/api/v1/chat/query", {
-    method: "POST",
-    headers: { "Content-Type": "application/json; charset=utf-8" },
-    body: JSON.stringify({
-      query,
-      top_k: Number(elements.topK.value),
-      min_score: Number(elements.minScore.value),
-      chat_model: elements.chatModel.value || null,
-    }),
-  });
+  try {
+    const response = await fetch("/api/v1/chat/query/stream", {
+      method: "POST",
+      headers: { "Content-Type": "application/json; charset=utf-8" },
+      body: JSON.stringify({
+        query,
+        top_k: Number(elements.topK.value),
+        min_score: Number(elements.minScore.value),
+        chat_model: elements.chatModel.value || null,
+      }),
+    });
+    if (!response.ok || !response.body) {
+      throw new Error(`HTTP ${response.status}`);
+    }
 
-  const modelLabel = payload.answer_model ? ` · ${payload.answer_model}` : "";
-  elements.answerStatus.textContent = payload.refused ? "已拒答" : `命中 ${payload.hit_count} 条${modelLabel}`;
-  elements.answerStatus.className = payload.refused ? "answer-status refused" : "answer-status";
-  elements.answerOutput.textContent = payload.answer;
-  renderSources(payload.sources || []);
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder("utf-8");
+    let buffer = "";
+    const handleEvent = (block) => {
+      const line = block.split("\n").find((item) => item.startsWith("data: "));
+      if (!line) return;
+      const payload = JSON.parse(line.slice(6));
+      if (payload.type === "meta") {
+        renderSources(payload.sources || []);
+        elements.answerStatus.textContent = payload.refused
+          ? "已拒答"
+          : payload.answer_model
+            ? `模型生成中 · ${payload.answer_model}`
+            : "正在整理答案";
+        elements.answerStatus.className = payload.refused ? "answer-status refused" : "answer-status";
+      } else if (payload.type === "delta") {
+        elements.answerOutput.textContent += payload.text;
+        elements.answerStatus.textContent = "正在生成...";
+      } else if (payload.type === "replace") {
+        elements.answerOutput.textContent = payload.text;
+      } else if (payload.type === "done") {
+        const modelLabel = payload.answer_model ? ` · ${payload.answer_model}` : "";
+        elements.answerStatus.textContent = payload.refused
+          ? "已拒答"
+          : payload.answer_backend === "ollama"
+            ? `回答完成${modelLabel}`
+            : "回答完成（提取式）";
+        elements.answerStatus.className = payload.refused ? "answer-status refused" : "answer-status";
+      }
+    };
+
+    while (true) {
+      const { value, done } = await reader.read();
+      buffer += decoder.decode(value || new Uint8Array(), { stream: !done });
+      const blocks = buffer.split("\n\n");
+      buffer = blocks.pop() || "";
+      blocks.forEach(handleEvent);
+      if (done) break;
+    }
+    if (buffer.trim()) handleEvent(buffer);
+  } finally {
+    elements.queryButton.disabled = false;
+    elements.queryButton.textContent = "查询";
+  }
 }
 
 function selectNote(note) {

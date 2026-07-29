@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+from collections.abc import Iterator
 from pathlib import Path
 
 from app.core.config import DEFAULT_MIN_SCORE, DEFAULT_TOP_K, SAMPLE_DIR
@@ -92,12 +93,7 @@ class RagService:
         answer = ""
         answer_backend = "extractive"
         answer_model = None
-        generator = self.answer_generator
-        if generator is not None and chat_model:
-            available_models = {item["name"] for item in list_installed_chat_models()}
-            if chat_model not in available_models:
-                raise ValueError(f"聊天模型未安装：{chat_model}")
-            generator = create_answer_generator(chat_model)
+        generator = self._select_generator(chat_model)
         if generator is not None:
             try:
                 answer = generator.generate(query, sources[:1])
@@ -116,6 +112,94 @@ class RagService:
             answer_backend=answer_backend,
             answer_model=answer_model,
         )
+
+    def stream_query(
+        self,
+        query: str,
+        top_k: int = DEFAULT_TOP_K,
+        min_score: float = DEFAULT_MIN_SCORE,
+        chat_model: str | None = None,
+    ) -> Iterator[dict[str, object]]:
+        sources = self.retriever.search(query, top_k=top_k)
+        generator = self._select_generator(chat_model)
+        if not sources or sources[0].score < min_score:
+            return iter(
+                (
+                    {
+                        "type": "meta",
+                        "query": query,
+                        "sources": [source.model_dump() for source in sources],
+                        "hit_count": len(sources),
+                        "refused": True,
+                        "answer_backend": "extractive",
+                        "answer_model": None,
+                    },
+                    {
+                        "type": "replace",
+                        "text": "未检索到足够相关的资料，服务已拒答。请上传更相关的文档后再查询。",
+                    },
+                    {"type": "done", "refused": True, "answer_backend": "extractive", "answer_model": None},
+                )
+            )
+        return self._stream_answer(query, sources, generator)
+
+    def _select_generator(self, chat_model: str | None):
+        generator = self.answer_generator
+        if generator is not None and chat_model:
+            available_models = {item["name"] for item in list_installed_chat_models()}
+            if chat_model not in available_models:
+                raise ValueError(f"聊天模型未安装：{chat_model}")
+            generator = create_answer_generator(chat_model)
+        return generator
+
+    def _stream_answer(
+        self,
+        query: str,
+        sources: list[SourceChunk],
+        generator,
+    ) -> Iterator[dict[str, object]]:
+        answer_backend = generator.name if generator else "extractive"
+        answer_model = generator.model_name if generator else None
+        yield {
+            "type": "meta",
+            "query": query,
+            "sources": [source.model_dump() for source in sources],
+            "hit_count": len(sources),
+            "refused": False,
+            "answer_backend": answer_backend,
+            "answer_model": answer_model,
+        }
+
+        if generator is not None:
+            generate_stream = getattr(generator, "generate_stream", None)
+            if generate_stream is not None:
+                try:
+                    emitted = False
+                    full_answer = ""
+                    for chunk in generate_stream(query, sources[:1]):
+                        emitted = True
+                        full_answer += chunk
+                        yield {"type": "delta", "text": chunk}
+                    if emitted:
+                        if "[来源" not in full_answer:
+                            yield {"type": "delta", "text": "\n\n[来源1]"}
+                        yield {
+                            "type": "done",
+                            "refused": False,
+                            "answer_backend": generator.name,
+                            "answer_model": generator.model_name,
+                        }
+                        return
+                except RuntimeError:
+                    pass
+
+        yield {"type": "replace", "text": self._compose_answer(query, sources)}
+        yield {
+            "type": "done",
+            "refused": False,
+            "answer_backend": "extractive",
+            "answer_model": None,
+        }
 
     @staticmethod
     def _compose_answer(query: str, sources: list[SourceChunk]) -> str:

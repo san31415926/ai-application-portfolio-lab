@@ -1,4 +1,4 @@
 interface:
-  display_name: "AI Career Portfolio Coach"
-  short_description: "Resume, JD, portfolio, and GitHub project coaching"
-  default_prompt: "Use $ai-career-portfolio-coach to improve my resume and AI application portfolio for a target JD."
+  display_name: "AI 求职作品集辅导"
+  short_description: "简历、JD、作品集和 GitHub 项目辅导"
+  default_prompt: "使用 $ai-career-portfolio-coach，根据目标 JD 改进我的简历和 AI 应用作品集。"

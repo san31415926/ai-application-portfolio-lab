@@ -1,57 +1,56 @@
-# RAG Learning Notes
+# RAG 学习笔记
 
-## What Is RAG?
+## 什么是 RAG？
 
-RAG means retrieval augmented generation. It is a common pattern for building LLM applications that answer questions using external documents.
+RAG 是“检索增强生成”的缩写，是一种让 LLM 应用基于外部文档回答问题的常见模式。
 
-Instead of asking the model to answer from memory, the system first retrieves relevant text from a knowledge base. Then the model generates an answer using that retrieved context.
+系统不是让模型只凭记忆回答，而是先从知识库中检索相关文本，再让模型根据检索到的上下文生成回答。
 
-## Basic RAG Flow
+## RAG 基本流程
 
-1. Load documents.
-2. Split documents into chunks.
-3. Convert chunks into embeddings.
-4. Store embeddings in a vector database.
-5. Convert the user question into an embedding.
-6. Retrieve similar chunks.
-7. Send the chunks and question to the language model.
-8. Generate an answer with sources.
+1. 加载文档。
+2. 将文档切分成多个片段。
+3. 将片段转换为 Embedding 向量。
+4. 将向量存入向量数据库。
+5. 将用户问题转换为 Embedding 向量。
+6. 检索相似的文档片段。
+7. 将片段和问题发送给语言模型。
+8. 生成带来源的回答。
 
-## Why Chunking Matters
+## 为什么需要文本切分？
 
-Large documents are too long to send directly to a language model. Chunking breaks a document into smaller pieces.
+大文档太长，不能直接全部发送给语言模型。文本切分会把文档拆成更小的片段。
 
-A good chunk should be large enough to contain useful meaning, but small enough to retrieve accurately.
+好的片段应该足够大，能够保留有用的语义；同时也应该足够小，便于准确检索。
 
-Chunk overlap helps preserve context across boundaries. For example, if one paragraph ends in one chunk and the next paragraph continues in another chunk, overlap can reduce information loss.
+切片重叠可以保留边界两侧的上下文。例如一个段落在一个片段结尾、下一段在另一个片段开头时，重叠内容可以减少信息丢失。
 
-## Embeddings
+## Embedding
 
-An embedding is a numerical representation of text. Similar meanings should have similar vectors.
+Embedding 是文本的数值表示。含义相近的文本通常会得到相近的向量。
 
-Embeddings make semantic search possible. For example, the question "What should I learn for this role?" may match document text about "required skills" even if the exact words are different.
+Embedding 让语义搜索成为可能。例如，“这个岗位我应该先学什么？”可能检索到“岗位要求的技能”，即使两个问题没有完全相同的词。
 
-## Vector Store
+## 向量数据库
 
-A vector store saves text chunks and their embeddings. When the user asks a question, the system searches for the most similar vectors.
+向量数据库保存文本片段和对应的向量。当用户提问时，系统搜索与问题向量最相似的片段。
 
-Common vector stores include Chroma, FAISS, Pinecone, Weaviate, and Milvus.
+常见的向量数据库包括 Chroma、FAISS、Pinecone、Weaviate 和 Milvus。
 
-## Hallucination Control
+## 幻觉控制
 
-RAG can reduce hallucination, but it cannot remove it completely.
+RAG 可以降低幻觉，但不能完全消除幻觉。
 
-Useful techniques include:
+常用方法包括：
 
-- Ask the model to answer only from the provided context.
-- Show source snippets.
-- Refuse to answer when context is not enough.
-- Retrieve multiple chunks and compare them.
-- Add evaluation checks for relevance and faithfulness.
+- 要求模型只基于提供的上下文回答。
+- 展示来源片段。
+- 上下文不足时拒答。
+- 检索多个片段并进行对比。
+- 增加相关性和忠实度评估。
 
-## Beginner Learning Advice
+## 给初学者的学习建议
 
-For a beginner, the first goal is not to build a complex agent. The first goal is to understand each step of the RAG pipeline.
+初学者的第一目标不是构建复杂 Agent，而是理解 RAG 流程中的每一步。
 
-Start by loading a PDF and printing the extracted text. Then split the text into chunks. Only after that should you add embeddings, vector search, and model generation.
-
+先读取一个 PDF 并打印提取出的文本，再把文本切成片段。完成这些步骤后，再加入 Embedding、向量检索和模型生成。

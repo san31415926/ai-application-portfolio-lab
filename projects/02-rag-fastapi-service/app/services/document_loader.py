@@ -9,7 +9,7 @@ def validate_extension(filename: str) -> str:
     suffix = Path(filename).suffix.lower()
     if suffix not in ALLOWED_EXTENSIONS:
         allowed = ", ".join(sorted(ALLOWED_EXTENSIONS))
-        raise ValueError(f"unsupported file type: {suffix or '(none)'}. allowed: {allowed}")
+        raise ValueError(f"不支持的文件类型：{suffix or '无扩展名'}。允许的类型：{allowed}")
     return suffix
 
 

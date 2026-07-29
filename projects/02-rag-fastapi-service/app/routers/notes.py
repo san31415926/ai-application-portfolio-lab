@@ -4,19 +4,19 @@ from app.schemas import ApiResponse, NoteCreate, NoteSearchRequest, NoteUpdate, 
 from app.services.note_service import note_service
 
 
-router = APIRouter(prefix="/api/v1", tags=["notebook"])
+router = APIRouter(prefix="/api/v1", tags=["笔记本"])
 
 
 @router.post("/notes", response_model=ApiResponse)
 def create_note(payload: NoteCreate) -> ApiResponse:
     note = note_service.create(payload)
-    return ApiResponse(message="note created", data=note.model_dump())
+    return ApiResponse(message="笔记已创建", data=note.model_dump())
 
 
 @router.post("/notes/samples", response_model=ApiResponse)
 def load_sample_notes() -> ApiResponse:
     notes = note_service.load_samples()
-    return ApiResponse(message="sample notes loaded", data=[note.model_dump() for note in notes])
+    return ApiResponse(message="示例笔记已导入", data=[note.model_dump() for note in notes])
 
 
 @router.get("/notes", response_model=ApiResponse)
@@ -40,7 +40,7 @@ def search_notes(payload: NoteSearchRequest) -> ApiResponse:
 def get_note(note_id: str) -> ApiResponse:
     note = note_service.get(note_id)
     if note is None:
-        raise HTTPException(status_code=404, detail="note not found")
+        raise HTTPException(status_code=404, detail="笔记不存在")
     return ApiResponse(data=note.model_dump())
 
 
@@ -48,23 +48,23 @@ def get_note(note_id: str) -> ApiResponse:
 def update_note(note_id: str, payload: NoteUpdate) -> ApiResponse:
     note = note_service.update(note_id, payload)
     if note is None:
-        raise HTTPException(status_code=404, detail="note not found")
-    return ApiResponse(message="note updated", data=note.model_dump())
+        raise HTTPException(status_code=404, detail="笔记不存在")
+    return ApiResponse(message="笔记已更新", data=note.model_dump())
 
 
 @router.delete("/notes/{note_id}", response_model=ApiResponse)
 def delete_note(note_id: str) -> ApiResponse:
     deleted = note_service.delete(note_id)
     if not deleted:
-        raise HTTPException(status_code=404, detail="note not found")
-    return ApiResponse(message="note deleted")
+        raise HTTPException(status_code=404, detail="笔记不存在")
+    return ApiResponse(message="笔记已删除")
 
 
 @router.get("/notes/{note_id}/related", response_model=ApiResponse)
 def related_sources(note_id: str, top_k: int = Query(default=4, ge=1, le=10)) -> ApiResponse:
     sources = note_service.related_sources(note_id, top_k=top_k)
     if sources is None:
-        raise HTTPException(status_code=404, detail="note not found")
+        raise HTTPException(status_code=404, detail="笔记不存在")
     return ApiResponse(data=[source.model_dump() for source in sources])
 
 
@@ -72,7 +72,7 @@ def related_sources(note_id: str, top_k: int = Query(default=4, ge=1, le=10)) ->
 def assist_writing(note_id: str, payload: WritingAssistRequest) -> ApiResponse:
     result = note_service.assist(note_id, payload.mode)
     if result is None:
-        raise HTTPException(status_code=404, detail="note not found")
+        raise HTTPException(status_code=404, detail="笔记不存在")
     return ApiResponse(data=result.model_dump())
 
 
@@ -86,5 +86,5 @@ def due_reviews() -> ApiResponse:
 def complete_review(note_id: str) -> ApiResponse:
     note = note_service.complete_review(note_id)
     if note is None:
-        raise HTTPException(status_code=404, detail="note not found")
-    return ApiResponse(message="review completed", data=note.model_dump())
+        raise HTTPException(status_code=404, detail="笔记不存在")
+    return ApiResponse(message="回顾已完成", data=note.model_dump())

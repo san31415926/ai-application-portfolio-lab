@@ -1,6 +1,6 @@
-# Git Workflow
+# Git 工作流
 
-## First Setup
+## 首次配置
 
 检查 Git 身份：
 
@@ -16,7 +16,7 @@ git config --global user.name "你的 GitHub 用户名"
 git config --global user.email "你的 GitHub 邮箱"
 ```
 
-## Daily Workflow
+## 日常工作流
 
 每次开始学习前：
 
@@ -33,7 +33,7 @@ git commit -m "docs: update learning notes"
 git push
 ```
 
-## Recommended Commit Style
+## 推荐的提交类型
 
 - `docs:` 学习笔记、README、说明文档
 - `feat:` 新功能
@@ -42,10 +42,10 @@ git push
 - `test:` 测试
 - `chore:` 环境、依赖、配置
 
-## Never Commit
+## 永远不要提交
 
 - `.env`
-- API key
+- API 密钥
 - 本地上传的私人文件
 - 大体积临时文件
 

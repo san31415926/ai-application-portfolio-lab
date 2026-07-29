@@ -372,7 +372,7 @@ metric_cols = st.columns(4)
 with metric_cols[0]:
     metric_card("数据源", str(len(DEFAULT_SOURCE_PATHS)), "JD、学习笔记、README、项目记录")
 with metric_cols[1]:
-    metric_card("索引片段", str(len(knowledge_base.chunks)), "文本切片 + 重叠窗口")
+    metric_card("索引片段", str(len(knowledge_base.chunks)), "文本切分 + 重叠窗口")
 with metric_cols[2]:
     metric_card("默认问题", str(len(DEFAULT_QUESTIONS)), "技能、学习、简历、面试")
 with metric_cols[3]:

@@ -26,7 +26,7 @@ class RagService:
         rebuild_index: bool = True,
     ) -> DocumentInfo:
         if not text.strip():
-            raise ValueError("document text is empty")
+            raise ValueError("文档内容为空")
         return self.retriever.add_document(
             filename=filename,
             text=text,
@@ -96,7 +96,7 @@ class RagService:
         if generator is not None and chat_model:
             available_models = {item["name"] for item in list_installed_chat_models()}
             if chat_model not in available_models:
-                raise ValueError(f"chat model is not installed: {chat_model}")
+                raise ValueError(f"聊天模型未安装：{chat_model}")
             generator = create_answer_generator(chat_model)
         if generator is not None:
             try:

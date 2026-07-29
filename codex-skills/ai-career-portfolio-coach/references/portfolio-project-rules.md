@@ -1,51 +1,51 @@
-# Portfolio Project Rules
+# 作品集项目规则
 
-## Repository Packaging Checklist
+## 仓库包装检查表
 
-Make a portfolio repository scannable in this order:
+作品集仓库应按以下顺序让读者快速理解：
 
-1. What problem the project solves
-2. Who the user is
-3. What the system does
-4. How to run it
-5. What the architecture looks like
-6. Example input and output
-7. What was learned
-8. Known limitations and next steps
+1. 项目解决什么问题
+2. 谁会使用项目
+3. 系统做什么
+4. 如何运行
+5. 系统架构是什么样的
+6. 输入输出示例
+7. 学到了什么
+8. 已知限制和下一步
 
-## README Shape
+## README 结构
 
-Use these sections when improving a GitHub project:
+改进 GitHub 项目时建议使用：
 
-- `Overview`: one paragraph, recruiter-readable
-- `Demo`: screenshot, sample output, or terminal transcript
-- `Features`: 3-6 concrete capabilities
-- `Architecture`: pipeline or component explanation
-- `Run Locally`: exact commands
-- `Project Notes`: tradeoffs, limitations, and next improvements
-- `Resume Bullets`: 2-4 paste-ready bullets
+- `概览`：一段招聘者容易阅读的介绍
+- `演示`：截图、示例输出或终端记录
+- `功能`：3-6 个具体能力
+- `架构`：流程或组件说明
+- `本地运行`：准确的命令
+- `项目说明`：技术取舍、限制和下一步
+- `简历表述`：2-4 条可直接粘贴的项目要点
 
-## AI Application Portfolio Standards
+## AI 应用作品集标准
 
-For AI application engineer roles, highlight:
+面向 AI 应用工程师岗位时，重点说明：
 
-- Data ingestion and parsing
-- Chunking or preprocessing choices
-- Retrieval, ranking, or tool-use flow
-- Prompt design and failure handling
-- Source citation, refusal, or hallucination control
-- Evaluation plan or manual test cases
-- Engineering hygiene: `.env.example`, requirements, README, troubleshooting docs
+- 数据读取与解析
+- 文本切分或预处理取舍
+- 检索、排序或工具调用流程
+- 提示词设计和失败处理
+- 来源引用、拒答或幻觉控制
+- 评估计划或人工测试案例
+- 工程规范：`.env.example`、依赖文件、README 和排错文档
 
-## Project Story Pattern
+## 项目故事模板
 
-Answer these in the final project story:
+最终项目故事需要回答：
 
-- `背景`: Why this project exists
-- `输入`: Files, data, user questions, or external sources
-- `处理`: The technical pipeline
-- `输出`: What the user receives
-- `难点`: What could go wrong
-- `改进`: The next credible step
+- `背景`：为什么做这个项目
+- `输入`：文件、数据、用户问题或外部来源
+- `处理`：技术处理链路
+- `输出`：用户得到什么
+- `难点`：哪些地方可能出错
+- `改进`：下一步可信的升级方向
 
-Do not oversell a tutorial clone. Emphasize what the user understood, changed, documented, or connected to a job scenario.
+不要把课程复刻项目包装得过度夸张。重点说明用户理解了什么、改动了什么、记录了什么，以及它如何连接到目标岗位场景。

@@ -2,12 +2,39 @@ from __future__ import annotations
 
 from pathlib import Path
 import re
-import textwrap
+
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.cidfonts import UnicodeCIDFont
+from reportlab.pdfgen.canvas import Canvas
 
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "samples" / "source" / "ai_application_engineer_jd.md"
 OUTPUT = ROOT / "samples" / "pdf" / "ai_application_engineer_jd.pdf"
+
+
+FONT_NAME = "STSong-Light"
+FONT_SIZE = 11
+MAX_LINE_WIDTH = letter[0] - 108
+
+
+def wrap_line(line: str) -> list[str]:
+    if not line:
+        return [""]
+
+    wrapped: list[str] = []
+    current = ""
+    for character in line:
+        candidate = current + character
+        if current and pdfmetrics.stringWidth(candidate, FONT_NAME, FONT_SIZE) > MAX_LINE_WIDTH:
+            wrapped.append(current)
+            current = character
+        else:
+            current = candidate
+    if current:
+        wrapped.append(current)
+    return wrapped
 
 
 def markdown_to_lines(markdown: str) -> list[str]:
@@ -22,97 +49,40 @@ def markdown_to_lines(markdown: str) -> list[str]:
         line = re.sub(r"^#{1,6}\s+", "", line)
         line = re.sub(r"^\-\s+", "- ", line)
 
-        wrapped = textwrap.wrap(line, width=88) or [""]
-        lines.extend(wrapped)
+        lines.extend(wrap_line(line))
 
     return lines
 
 
-def escape_pdf_text(text: str) -> str:
-    return text.replace("\\", "\\\\").replace("(", "\\(").replace(")", "\\)")
-
-
-def build_pdf(lines: list[str]) -> bytes:
-    page_width = 612
-    page_height = 792
+def build_pdf(lines: list[str], output: Path) -> None:
+    page_width, page_height = letter
     left = 54
-    top = 740
+    top = page_height - 52
+    bottom = 52
     line_height = 14
-    max_lines = 48
 
-    pages = [lines[i : i + max_lines] for i in range(0, len(lines), max_lines)]
-    objects: list[bytes] = []
-
-    def add_object(body: str) -> int:
-        objects.append(body.encode("latin-1"))
-        return len(objects)
-
-    catalog_id = add_object("<< /Type /Catalog /Pages 2 0 R >>")
-    pages_id = add_object("PLACEHOLDER")
-    font_id = add_object("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>")
-    page_ids: list[int] = []
-
-    for page_lines in pages:
-        content_parts = ["BT", f"/F1 11 Tf", f"{left} {top} Td"]
-        first_line = True
-        for line in page_lines:
-            if not first_line:
-                content_parts.append(f"0 -{line_height} Td")
-            first_line = False
-            content_parts.append(f"({escape_pdf_text(line)}) Tj")
-        content_parts.append("ET")
-        stream = "\n".join(content_parts)
-        content_id = add_object(
-            f"<< /Length {len(stream.encode('latin-1'))} >>\n"
-            f"stream\n{stream}\nendstream"
-        )
-        page_id = add_object(
-            "<< /Type /Page "
-            "/Parent 2 0 R "
-            f"/MediaBox [0 0 {page_width} {page_height}] "
-            f"/Resources << /Font << /F1 {font_id} 0 R >> >> "
-            f"/Contents {content_id} 0 R >>"
-        )
-        page_ids.append(page_id)
-
-    kids = " ".join(f"{page_id} 0 R" for page_id in page_ids)
-    objects[pages_id - 1] = (
-        f"<< /Type /Pages /Kids [{kids}] /Count {len(page_ids)} >>"
-    ).encode("latin-1")
-
-    pdf = bytearray(b"%PDF-1.4\n")
-    offsets = [0]
-    for idx, obj in enumerate(objects, start=1):
-        offsets.append(len(pdf))
-        pdf.extend(f"{idx} 0 obj\n".encode("latin-1"))
-        pdf.extend(obj)
-        pdf.extend(b"\nendobj\n")
-
-    xref_offset = len(pdf)
-    pdf.extend(f"xref\n0 {len(objects) + 1}\n".encode("latin-1"))
-    pdf.extend(b"0000000000 65535 f \n")
-    for offset in offsets[1:]:
-        pdf.extend(f"{offset:010d} 00000 n \n".encode("latin-1"))
-
-    pdf.extend(
-        (
-            "trailer\n"
-            f"<< /Size {len(objects) + 1} /Root {catalog_id} 0 R >>\n"
-            "startxref\n"
-            f"{xref_offset}\n"
-            "%%EOF\n"
-        ).encode("latin-1")
-    )
-    return bytes(pdf)
+    canvas = Canvas(str(output), pagesize=letter)
+    canvas.setTitle("AI 应用工程师岗位说明")
+    canvas.setAuthor("LearningHub 示例素材")
+    canvas.setFont(FONT_NAME, FONT_SIZE)
+    y = top
+    for line in lines:
+        if y < bottom:
+            canvas.showPage()
+            canvas.setFont(FONT_NAME, FONT_SIZE)
+            y = top
+        canvas.drawString(left, y, line)
+        y -= line_height
+    canvas.save()
 
 
 def main() -> None:
+    pdfmetrics.registerFont(UnicodeCIDFont(FONT_NAME))
     markdown = SOURCE.read_text(encoding="utf-8")
-    ascii_markdown = markdown.encode("ascii", errors="ignore").decode("ascii")
-    lines = markdown_to_lines(ascii_markdown)
+    lines = markdown_to_lines(markdown)
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
-    OUTPUT.write_bytes(build_pdf(lines))
-    print(f"Generated {OUTPUT}")
+    build_pdf(lines, OUTPUT)
+    print(f"已生成：{OUTPUT}")
 
 
 if __name__ == "__main__":

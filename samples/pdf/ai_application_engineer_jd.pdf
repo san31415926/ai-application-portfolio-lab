@@ -1,187 +1,108 @@
-%PDF-1.4
+%PDF-1.3
+%“Œ‹ž ReportLab Generated PDF document (opensource)
 1 0 obj
-<< /Type /Catalog /Pages 2 0 R >>
+<<
+/F1 2 0 R /F2 3 0 R
+>>
 endobj
 2 0 obj
-<< /Type /Pages /Kids [5 0 R 7 0 R] /Count 2 >>
+<<
+/BaseFont /Helvetica /Encoding /WinAnsiEncoding /Name /F1 /Subtype /Type1 /Type /Font
+>>
 endobj
 3 0 obj
-<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+<<
+/BaseFont /STSong-Light /DescendantFonts [ <<
+/BaseFont /STSong-Light /CIDSystemInfo <<
+/Ordering (GB1) /Registry (Adobe) /Supplement 0
+>> /DW 1000 /FontDescriptor <<
+/Ascent 752 /CapHeight 737 /Descent -271 /Flags 6 /FontBBox [ -25 -254 1000 880 ] /FontName /STSongStd-Light 
+  /ItalicAngle 0 /Leading 148 /MaxWidth 1000 /MissingWidth 500 /StemH 91 /StemV 58 
+  /Type /FontDescriptor /XHeight 553
+>> /Subtype /CIDFontType0 /Type /Font 
+  /W [ 1 [ 207 270 342 467 462 797 710 239 374 ] 10 [ 374 423 605 238 375 238 334 462 ] 18 26 462 27 28 238 
+  29 31 605 32 [ 344 748 684 560 695 739 563 511 729 793 
+  318 312 666 526 896 758 772 544 772 628 
+  465 607 753 711 972 647 620 607 374 333 
+  374 606 500 239 417 503 427 529 415 264 
+  444 518 241 230 495 228 793 527 524 ] 81 [ 524 504 338 336 277 517 450 652 466 452 
+  407 370 258 370 605 ] ]
+>> ] /Encoding /UniGB-UCS2-H /Name /F2 /Subtype /Type0 /Type /Font
+>>
 endobj
 4 0 obj
-<< /Length 2695 >>
-stream
-BT
-/F1 11 Tf
-54 740 Td
-(AI Application Engineer Job Description) Tj
-0 -14 Td
-() Tj
-0 -14 Td
-(Company Background) Tj
-0 -14 Td
-() Tj
-0 -14 Td
-(FlowAI is a small software company building internal AI tools for sales, operations, and) Tj
-0 -14 Td
-(customer support teams. The company wants to turn large language models into practical) Tj
-0 -14 Td
-(applications that solve real business problems.) Tj
-0 -14 Td
-() Tj
-0 -14 Td
-(Role Summary) Tj
-0 -14 Td
-() Tj
-0 -14 Td
-(We are looking for a junior AI Application Engineer who can build useful LLM-powered) Tj
-0 -14 Td
-(applications. This role focuses on retrieval augmented generation, agent workflows, data) Tj
-0 -14 Td
-(analysis assistants, and simple web applications.) Tj
-0 -14 Td
-() Tj
-0 -14 Td
-(The engineer does not need to train foundation models from scratch. The main) Tj
-0 -14 Td
-(responsibility is to connect models, data, tools, and user interfaces into reliable) Tj
-0 -14 Td
-(products.) Tj
-0 -14 Td
-() Tj
-0 -14 Td
-(Responsibilities) Tj
-0 -14 Td
-() Tj
-0 -14 Td
-(- Build RAG applications for PDF, Markdown, and internal knowledge base documents.) Tj
-0 -14 Td
-(- Use embeddings and vector databases to retrieve relevant context.) Tj
-0 -14 Td
-(- Design prompts that make model outputs clear, grounded, and useful.) Tj
-0 -14 Td
-(- Build simple agent workflows that can call tools such as search, file readers, and) Tj
-0 -14 Td
-(data analysis functions.) Tj
-0 -14 Td
-(- Create Streamlit or web-based demos for non-technical users.) Tj
-0 -14 Td
-(- Evaluate answers by checking source documents, relevance, and hallucination risk.) Tj
-0 -14 Td
-(- Write clean documentation so teammates can run and understand the project.) Tj
-0 -14 Td
-() Tj
-0 -14 Td
-(Required Skills) Tj
-0 -14 Td
-() Tj
-0 -14 Td
-(- Basic Python programming.) Tj
-0 -14 Td
-(- Familiarity with LangChain or similar LLM application frameworks.) Tj
-0 -14 Td
-(- Understanding of RAG concepts: chunking, embeddings, vector stores, retrievers,) Tj
-0 -14 Td
-(prompts, and generation.) Tj
-0 -14 Td
-(- Basic knowledge of APIs, environment variables, and Git.) Tj
-0 -14 Td
-(- Ability to debug errors step by step.) Tj
-0 -14 Td
-(- Clear communication and willingness to learn.) Tj
-0 -14 Td
-() Tj
-0 -14 Td
-(Nice To Have) Tj
-0 -14 Td
-() Tj
-0 -14 Td
-(- Experience with Streamlit, FastAPI, or simple frontend development.) Tj
-0 -14 Td
-(- Experience with Chroma, FAISS, Pinecone, or other vector databases.) Tj
-0 -14 Td
-(- Knowledge of NLP, neural networks, and deep learning basics.) Tj
-0 -14 Td
-(- Experience building AI agents with tool calling.) Tj
-0 -14 Td
-(- Ability to turn business requirements into small working prototypes.) Tj
-0 -14 Td
-() Tj
-0 -14 Td
-(Example Interview Questions) Tj
-ET
-endstream
+<<
+/Contents 9 0 R /MediaBox [ 0 0 612 792 ] /Parent 8 0 R /Resources <<
+/Font 1 0 R /ProcSet [ /PDF /Text /ImageB /ImageC /ImageI ]
+>> /Rotate 0 /Trans <<
+
+>> 
+  /Type /Page
+>>
 endobj
 5 0 obj
-<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 4 0 R >>
+<<
+/Contents 10 0 R /MediaBox [ 0 0 612 792 ] /Parent 8 0 R /Resources <<
+/Font 1 0 R /ProcSet [ /PDF /Text /ImageB /ImageC /ImageI ]
+>> /Rotate 0 /Trans <<
+
+>> 
+  /Type /Page
+>>
 endobj
 6 0 obj
-<< /Length 1206 >>
-stream
-BT
-/F1 11 Tf
-54 740 Td
-() Tj
-0 -14 Td
-(1. What problem does RAG solve?) Tj
-0 -14 Td
-(2. Why do we split documents into chunks?) Tj
-0 -14 Td
-(3. What is the difference between embeddings and prompts?) Tj
-0 -14 Td
-(4. How do you reduce hallucination in a document QA system?) Tj
-0 -14 Td
-(5. How would you evaluate whether a retrieved document chunk is relevant?) Tj
-0 -14 Td
-(6. How would you explain your AI application project to a non-technical user?) Tj
-0 -14 Td
-() Tj
-0 -14 Td
-(Project Assignment) Tj
-0 -14 Td
-() Tj
-0 -14 Td
-(Build a small AI Job Description Knowledge Base. The user can upload job descriptions) Tj
-0 -14 Td
-(and learning notes, then ask questions such as:) Tj
-0 -14 Td
-() Tj
-0 -14 Td
-(- What skills does this role require?) Tj
-0 -14 Td
-(- Which skills are most important for a beginner?) Tj
-0 -14 Td
-(- What should I learn first?) Tj
-0 -14 Td
-(- What project can I build for my resume?) Tj
-0 -14 Td
-(- What interview questions should I prepare?) Tj
-0 -14 Td
-() Tj
-0 -14 Td
-(The answer should cite the relevant source text when possible. If the document does not) Tj
-0 -14 Td
-(contain enough information, the system should say that it cannot find enough evidence.) Tj
-0 -14 Td
-() Tj
-ET
-endstream
+<<
+/PageMode /UseNone /Pages 8 0 R /Type /Catalog
+>>
 endobj
 7 0 obj
-<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 6 0 R >>
+<<
+/Author (\376\377\000L\000e\000a\000r\000n\000i\000n\000g\000H\000u\000b\000 y:O\213} gP) /CreationDate (D:20260729174835+08'00') /Creator (anonymous) /Keywords () /ModDate (D:20260729174835+08'00') /Producer (ReportLab PDF Library - \(opensource\)) 
+  /Subject (unspecified) /Title (\376\377\000A\000I\000 ^\224u\(]\345z\013^\010\\\227OM\213\364f\016) /Trapped /False
+>>
+endobj
+8 0 obj
+<<
+/Count 2 /Kids [ 4 0 R 5 0 R ] /Type /Pages
+>>
+endobj
+9 0 obj
+<<
+/Filter [ /ASCII85Decode /FlateDecode ] /Length 2129
+>>
+stream
+Gat=,qfC4U&H8686I5t%QK6nh\=I?-,q7;2`f;/qW(q0\Fs,+&8l?>Dhqm2&e&cWX;Tph"XN0/2^AW4V4CR`?dlKTdP%Rq']"o%4P&-Y-[A&h#.s[`BU\c7oSF4Q8;;UL8#d"`?=HX[XGk4eX(jh.`$XAj$/qj(g5PdI.8q4u$QT\GQT#6!2hTc:k\MS%02pDk)p*%O!09@MS6s=sG)RaTXk@c60QK<_'>]M\cNLjS0f9R.eel7W92K1[njV4&^3F@bI;uHMF(WLuX(q7-<+2R>Y$=5KAlI&j\WXafrq4k;#T%(:=eI$pn*+.$g5QfP\)-eUM:l0`DXUamsCP[Xo4XOgi:@PA,*%3l;9>bU+>r,Ak:-4>@k6dgfY6]k\:#I!O!'0'+6PiM"nHq4'\0(I0N?K\e%76F9BHW&PlF3]H4Q)lh"FZ9B_E2.s1uLAC\mQp6G=ZT/0#R^UBHk+l0J)-Q<lB.09B49q(u>Uu^BZoT$]\ZcF2[X:j"\ae^jd>cUE*=jJJ7/'L-V%jk]@W2VJj7aG#?%bWU%r5M+WULJ-4uqDT(1KfMA/L6;\kWTWPG7=/8](8pV$[Cp)*)@6(!3klFt/OA!U-4EuKVp0&P8!Ap&Rro8H:NLVlBAVA550)q6QDs-rd;`]DM2EV#\0f),5!-4M=rh;Ne7[NJS$7>1qdg!9UN2il/Q3Nti1%<H,0#acaCJc1r,f($7S:ZG/j)Rot.O:4i(sr;3qf(GhU^qkLF0QDGh1?%5c$5Kj^qUcb6pEeROGgpNJc3*4.L]Q782CAKC5O*pMRN:rT<OJ&1,Da[2gA"LSMOHgEi+Y9Bj:KH)$<ic$]bH-,P$Lq!eaVtkTqj2;!DrS?DL49QZHCAEVZM9;[C#B3P7]E=(n'2,r:?H3J,<F?s':E&D[deZ+19f=d0,CII3P/MnDlBHB-0gaHKK*LmIeOU.K'"L<Sf5_'7=K)UAeX=IV>f#^1cWZa*nW[2-YVWOU+\lZ5I6<(`4t-o+2;PL0]J)B%(!p/30LU@8_eLKKn@/JeGj)`4jCXb>/:->ml^&rBY@>]?B9?QQ_96oUnbbFob<_?iR>Xg2+8NuFQp^[Sd,g<\7&>oBug6rV.I+WGqCH34jF=XF'_Z6cPbh$LsEK0oM:X.t1iV]V(]M:2#F`bjFE:gGq+Z7C=N(Oa@\K]`Jdj+63rO+QCX]Dmu0dCXRM%e?]3"[Tot\Z=HN2)=>P^8n6M;Bdrr/=U\o;\P](Zlog);t.K#AauZR;/IY:_m;;?ii/gohhlH_7<YC):!phOC"#`AeJ].b9Coc)Z/jR?s'_3I99:Xo-@1h[?^g&PD8sR,]`IP#g_\Wnk>)1^%g'/2<$F_!^#!\U1^>"8lqBYobuqeR]Y=\gqGg^Bl1Fe_rQF"X]Ru1M:,i]oX(FPuJgja1W:,J>)stEk"^u]I'>A.:o0R<-F![P$Mi/-0ns/G3!F<t?^@-_e]@IljaQ>7^3/C?4RU2'k(Qbj:H=ho=O0asI4S.+?D;(MT8d_PQBMl8Y'Gerh?E$sm/=hP-'P'f>8KibS3;UG,<cUE)2UEDM1lZO:5_q"*g!a0oZN"\^LM`K?DfC)P2bs,5Ko,J)C;m[7(nu"d-.pYi3fTb>@Shl!dETK5rKo6:b88]j59&RHMm.C0L*^(!?@pPSh>W)Th/ad:B^#/`TDEkt8eO2r]LpcIX#?2P0KEPh4FL?Y!qOI;9$sE^bg'eb3ij/qe<h]!QFt\^].ZbCC$u8fU.[Q:9.J*Z@ph^]_bLromPDLA-.^;^e-?fXpYFk'41\hHR/,_Q/f/\r";YVW;$C%olLOU[k,c#93Ta`29+iE2kh,q@VS^`eUZtO&j,.4>fkq&*-B,i"C9B/E?uQcPJSD1P=u/*E")SB.s$82bXBq@F\?(;cA^!cR106[$V-#J$5Ne=)2;?,.&9UhcV$:WaLi?]Sk_k/`CT/,C^`jCZqY5I0&@Bm1icuQ\b,PQX@aLZ]*@SV6*BUCkO,a"<f9)mZeU*3[;Yq3;o%WQ=kk9EYY-ZG6/L#JmoEbPHAjC'.@BGR2oIUfhhi@1.Pjb9VCj,aG;&QQLhtq\u;7`_/W4=4fT^(g\=\^NdiM+"mD06YB2(aTQ7MYS:b'J*sIoUM'*W~>endstream
+endobj
+10 0 obj
+<<
+/Filter [ /ASCII85Decode /FlateDecode ] /Length 647
+>>
+stream
+Gat$u?#(*N&:O#N\<"%24#?U]$9fjd&MtZuJqOQ?ChU85NJR?uUqb`,n*W)Jfpa*m0A2c(1M>"'=Z1pTkAtoabj3EA]k,)jWg.":l:gm-]W$ps>mte_gJceZ\P(nPM2k8P3tQ\=@d237[6@8a-V@F2R-M#W:'QkP-mU6K8U(KD1b.Q=eODi%U</7l'$$%_Cm2]2j&J.s[BHSSEV^jUD/_!nLL4eeD_2YU&RYp]njAK(G_)IG,R'h@bB,^2Kf?JC9s-BHij)2Y!EOm*I=iV-9=7*m(2K6I@H%r9M8/uL.sonVcU\#Y?5U6$e3M-^Q5AMYeoE+AlVCu1_8@C`/&2:,Z*qY&ji9jJ!KQ:,Z)F)fl3h.]F/8>a<DH6KS*Q[)6KP(5-`iV^O7FtE?W,bs:5pE;dQordb\B%2_o:7NZ16ckXsDUh20Qq2@[$Z"^_(`Ih%mY1Y/@*4,`fY+-/m2/N*EI6r9H6@&fm;&*ZSG5>kn_lK^or@llG.)>L`L)'A!WN'Dh6$<\P5%p:\"C,DmTcMTsV_a`I@rctZjphCQF?3/2sHBTdUlSYpY.+G6l3p3Z\8DVk$ClN`>Thk`4(kO]lmpFY@c\kgkVRU(q[SLGqmKH_:_<0ShX1RmZAS3,Is@#k3e@-V4_~>endstream
 endobj
 xref
-0 8
+0 11
 0000000000 65535 f 
-0000000009 00000 n 
-0000000058 00000 n 
-0000000121 00000 n 
-0000000191 00000 n 
-0000002938 00000 n 
-0000003064 00000 n 
-0000004322 00000 n 
+0000000061 00000 n 
+0000000102 00000 n 
+0000000209 00000 n 
+0000001142 00000 n 
+0000001335 00000 n 
+0000001529 00000 n 
+0000001597 00000 n 
+0000001987 00000 n 
+0000002052 00000 n 
+0000004272 00000 n 
 trailer
-<< /Size 8 /Root 1 0 R >>
+<<
+/ID 
+[<c772f4fd66a479491fcdc29db898c5a7><c772f4fd66a479491fcdc29db898c5a7>]
+% ReportLab generated PDF document -- digest (opensource)
+
+/Info 7 0 R
+/Root 6 0 R
+/Size 11
+>>
 startxref
-4448
+5010
 %%EOF

@@ -1,6 +1,6 @@
-# Learning Roadmap
+# 学习路线图
 
-## Principle
+## 学习原则
 
 每个案例都按同一个节奏学习：
 
@@ -10,7 +10,7 @@
 4. 换成自己的业务场景。
 5. 写 README、截图、复盘。
 
-## Stage 1: RAG Foundation
+## 阶段 1：RAG 基础
 
 目标：理解 PDF 问答系统的完整链路。
 
@@ -18,10 +18,10 @@
 
 - PDF 读取
 - 文本切分
-- Embedding
+- Embedding 向量
 - 向量数据库
-- Retriever
-- Prompt
+- Retriever 检索器
+- Prompt 提示词
 - LLM 回答
 - 来源引用
 
@@ -32,7 +32,7 @@
 - 能解释为什么需要 chunk 和 embedding。
 - 能说明系统如何降低幻觉。
 
-## Stage 2: Data Analysis Agent
+## 阶段 2：数据分析 Agent
 
 目标：让用户上传 CSV 或 Excel，用自然语言进行分析。
 
@@ -50,7 +50,7 @@
 - 能生成至少一种图表。
 - 能输出简短分析结论。
 
-## Stage 3: Web Research Agent
+## 阶段 3：Web 研究 Agent
 
 目标：把网页搜索、内容提取和报告生成组合成一个研究助手。
 
@@ -68,7 +68,7 @@
 - 报告中保留来源链接。
 - 能说明 Agent 的每一步做了什么。
 
-## Stage 4: Agentic RAG
+## 阶段 4：Agent 化 RAG
 
 目标：把普通 RAG 升级成更可靠的 RAG。
 

@@ -149,13 +149,13 @@ class OllamaEmbeddingModel:
             with urlopen(request, timeout=self.timeout) as response:
                 payload = json.loads(response.read().decode("utf-8"))
         except (HTTPError, URLError, TimeoutError, OSError) as exc:
-            raise RuntimeError(f"Ollama embedding unavailable: {exc}") from exc
+            raise RuntimeError(f"Ollama Embedding 不可用：{exc}") from exc
 
         embeddings = payload.get("embeddings")
         if embeddings is None and "embedding" in payload:
             embeddings = [payload["embedding"]]
         if not isinstance(embeddings, list) or len(embeddings) != len(texts):
-            raise RuntimeError("Ollama returned an unexpected embedding response")
+            raise RuntimeError("Ollama 返回了无法识别的 Embedding 响应")
         return [[float(value) for value in embedding] for embedding in embeddings]
 
 

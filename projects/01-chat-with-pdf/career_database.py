@@ -385,14 +385,14 @@ def print_table(rows: list[dict[str, Any]]) -> None:
 
 
 def build_arg_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Seed and query the local AI career demo SQLite database.")
-    parser.add_argument("--init", action="store_true", help="Recreate the SQLite database from seed data.")
-    parser.add_argument("--query", choices=QUERY_PRESETS.keys(), default="jobs", help="Preset query to run.")
-    parser.add_argument("--keyword", default="", help="Keyword for job search.")
-    parser.add_argument("--role-id", type=int, default=1, help="Role id for skill/project/interview queries.")
-    parser.add_argument("--status", default="", help="Learning task status filter.")
-    parser.add_argument("--sql", default="", help="Run a read-only SELECT query.")
-    parser.add_argument("--db-path", type=Path, default=DEFAULT_DB_PATH, help="SQLite database path.")
+    parser = argparse.ArgumentParser(description="初始化并查询本地 AI 求职演示 SQLite 数据库。")
+    parser.add_argument("--init", action="store_true", help="根据种子数据重新创建 SQLite 数据库。")
+    parser.add_argument("--query", choices=QUERY_PRESETS.keys(), default="jobs", help="要执行的预设查询。")
+    parser.add_argument("--keyword", default="", help="岗位搜索关键词。")
+    parser.add_argument("--role-id", type=int, default=1, help="技能、项目或面试题查询使用的岗位编号。")
+    parser.add_argument("--status", default="", help="学习任务状态筛选条件。")
+    parser.add_argument("--sql", default="", help="执行只读 SELECT 查询。")
+    parser.add_argument("--db-path", type=Path, default=DEFAULT_DB_PATH, help="SQLite 数据库路径。")
     return parser
 
 

@@ -134,7 +134,7 @@ def load_documents(paths: Iterable[Path]) -> list[Document]:
     for path in paths:
         resolved = path if path.is_absolute() else PROJECT_ROOT / path
         if not resolved.exists():
-            raise FileNotFoundError(f"Source not found: {resolved}")
+            raise FileNotFoundError(f"找不到来源文件：{resolved}")
         documents.append(Document(source=resolved, text=read_text(resolved)))
 
     return documents
@@ -403,23 +403,23 @@ def parse_source_paths(values: list[str] | None) -> list[Path]:
 
 def build_arg_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="Local evidence-backed JD knowledge base for AI career portfolio demos."
+        description="基于本地来源证据的 AI 岗位 JD 知识库演示。"
     )
     parser.add_argument(
         "question",
         nargs="?",
         default="这个岗位要求哪些技能？",
-        help="Question to ask the local knowledge base.",
+        help="要向本地知识库提问的问题。",
     )
     parser.add_argument(
         "--source",
         action="append",
-        help="Source file path. Can be used multiple times. Defaults to sample JD, RAG notes, and project docs.",
+        help="来源文件路径，可重复使用；默认读取示例 JD、RAG 笔记和项目文档。",
     )
-    parser.add_argument("--top-k", type=int, default=4, help="Number of chunks to retrieve.")
-    parser.add_argument("--chunk-size", type=int, default=900, help="Maximum characters per chunk.")
-    parser.add_argument("--overlap", type=int, default=120, help="Character overlap between chunks.")
-    parser.add_argument("--show-index", action="store_true", help="Print indexed chunks before answering.")
+    parser.add_argument("--top-k", type=int, default=4, help="返回的相关片段数量。")
+    parser.add_argument("--chunk-size", type=int, default=900, help="每个片段的最大字符数。")
+    parser.add_argument("--overlap", type=int, default=120, help="相邻片段之间重叠的字符数。")
+    parser.add_argument("--show-index", action="store_true", help="回答前打印已建立索引的片段。")
     return parser
 
 
@@ -430,10 +430,10 @@ def main() -> None:
     knowledge_base = KnowledgeBase.from_documents(documents, args.chunk_size, args.overlap)
 
     if args.show_index:
-        print(f"Indexed documents: {len(documents)}")
-        print(f"Indexed chunks: {len(knowledge_base.chunks)}")
+        print(f"已索引文档：{len(documents)}")
+        print(f"已索引片段：{len(knowledge_base.chunks)}")
         for chunk in knowledge_base.chunks:
-            print(f"- {chunk.id}: {relative_source(chunk.source)} ({len(chunk.text)} chars)")
+            print(f"- {chunk.id}：{relative_source(chunk.source)}（{len(chunk.text)} 个字符）")
         print()
 
     results = knowledge_base.retrieve(args.question, args.top_k)

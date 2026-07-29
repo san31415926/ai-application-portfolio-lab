@@ -1,60 +1,59 @@
-# AI Application Engineer Job Description
+# AI 应用工程师岗位说明
 
-## Company Background
+## 公司背景
 
-FlowAI is a small software company building internal AI tools for sales, operations, and customer support teams. The company wants to turn large language models into practical applications that solve real business problems.
+FlowAI 是一家小型软件公司，正在为销售、运营和客户支持团队构建内部 AI 工具。公司希望把大语言模型转化为能够解决真实业务问题的实用应用。
 
-## Role Summary
+## 岗位概述
 
-We are looking for a junior AI Application Engineer who can build useful LLM-powered applications. This role focuses on retrieval augmented generation, agent workflows, data analysis assistants, and simple web applications.
+我们正在寻找一名初级 AI 应用工程师，能够构建有实际用途的 LLM 应用。岗位重点包括检索增强生成、Agent 工作流、数据分析助手和简单 Web 应用。
 
-The engineer does not need to train foundation models from scratch. The main responsibility is to connect models, data, tools, and user interfaces into reliable products.
+工程师不需要从零训练基础模型，主要职责是把模型、数据、工具和用户界面连接成可靠的产品。
 
-## Responsibilities
+## 工作职责
 
-- Build RAG applications for PDF, Markdown, and internal knowledge base documents.
-- Use embeddings and vector databases to retrieve relevant context.
-- Design prompts that make model outputs clear, grounded, and useful.
-- Build simple agent workflows that can call tools such as search, file readers, and data analysis functions.
-- Create Streamlit or web-based demos for non-technical users.
-- Evaluate answers by checking source documents, relevance, and hallucination risk.
-- Write clean documentation so teammates can run and understand the project.
+- 为 PDF、Markdown 和内部知识库文档构建 RAG 应用。
+- 使用 Embedding 和向量数据库检索相关上下文。
+- 设计清晰、有来源约束且实用的提示词。
+- 构建能够调用搜索、文件读取和数据分析函数等工具的简单 Agent 工作流。
+- 为非技术用户创建 Streamlit 或 Web 演示。
+- 通过检查来源文档、相关性和幻觉风险评估回答质量。
+- 编写清晰的文档，让团队成员可以运行和理解项目。
 
-## Required Skills
+## 必备技能
 
-- Basic Python programming.
-- Familiarity with LangChain or similar LLM application frameworks.
-- Understanding of RAG concepts: chunking, embeddings, vector stores, retrievers, prompts, and generation.
-- Basic knowledge of APIs, environment variables, and Git.
-- Ability to debug errors step by step.
-- Clear communication and willingness to learn.
+- 掌握基础 Python 编程。
+- 了解 LangChain 或类似的 LLM 应用框架。
+- 理解 RAG 概念：文本切分、Embedding、向量数据库、检索器、提示词和生成。
+- 了解 API、环境变量和 Git 的基础使用。
+- 能够按步骤排查错误。
+- 沟通清晰并愿意持续学习。
 
-## Nice To Have
+## 加分项
 
-- Experience with Streamlit, FastAPI, or simple frontend development.
-- Experience with Chroma, FAISS, Pinecone, or other vector databases.
-- Knowledge of NLP, neural networks, and deep learning basics.
-- Experience building AI agents with tool calling.
-- Ability to turn business requirements into small working prototypes.
+- 使用过 Streamlit、FastAPI 或简单的前端开发。
+- 使用过 Chroma、FAISS、Pinecone 或其他向量数据库。
+- 了解 NLP、神经网络和深度学习基础。
+- 有使用工具调用构建 AI Agent 的经验。
+- 能够将业务需求拆解成可运行的小型原型。
 
-## Example Interview Questions
+## 示例面试问题
 
-1. What problem does RAG solve?
-2. Why do we split documents into chunks?
-3. What is the difference between embeddings and prompts?
-4. How do you reduce hallucination in a document QA system?
-5. How would you evaluate whether a retrieved document chunk is relevant?
-6. How would you explain your AI application project to a non-technical user?
+1. RAG 解决什么问题？
+2. 为什么要把文档切成多个片段？
+3. Embedding 和提示词有什么区别？
+4. 如何降低文档问答系统中的幻觉？
+5. 如何判断检索到的文档片段是否相关？
+6. 如何向非技术用户解释你的 AI 应用项目？
 
-## Project Assignment
+## 项目作业
 
-Build a small AI Job Description Knowledge Base. The user can upload job descriptions and learning notes, then ask questions such as:
+构建一个小型 AI 岗位说明知识库。用户可以上传岗位说明和学习笔记，然后提出以下问题：
 
-- What skills does this role require?
-- Which skills are most important for a beginner?
-- What should I learn first?
-- What project can I build for my resume?
-- What interview questions should I prepare?
+- 这个岗位需要哪些技能？
+- 对初学者来说哪些技能最重要？
+- 我应该先学习什么？
+- 我可以为简历构建什么项目？
+- 我应该准备哪些面试问题？
 
-The answer should cite the relevant source text when possible. If the document does not contain enough information, the system should say that it cannot find enough evidence.
-
+系统应尽可能引用相关来源文本。如果文档没有足够信息，系统应明确说明找不到足够证据，而不是编造答案。

@@ -1,52 +1,52 @@
-# Resume Rules
+# 简历规则
 
-## JD Analysis
+## JD 分析
 
-Extract the target role into a table:
+将目标岗位拆成表格：
 
-| Category | Evidence to find | Notes |
+| 类别 | 需要寻找的证据 | 说明 |
 | --- | --- | --- |
-| Core tasks | What the hire will do repeatedly | Convert into resume proof |
-| Technical stack | Tools, libraries, frameworks, platforms | Match only skills the user can defend |
-| Business context | Industry, user, data, workflow, risk | Use to frame project impact |
-| Evaluation hints | "Must", "preferred", "familiar with", "own", "build" | Weight keywords by importance |
+| 核心工作 | 招聘者希望候选人反复完成的工作 | 转化为简历证明 |
+| 技术栈 | 工具、库、框架和平台 | 只匹配用户能够解释的技能 |
+| 业务背景 | 行业、用户、数据、流程和风险 | 用于说明项目价值 |
+| 评估提示 | “必须”“优先”“熟悉”“拥有”“构建”等表述 | 按重要程度给关键词排序 |
 
-## Bullet Formula
+## 简历要点公式
 
-Use one of these forms:
+使用以下结构之一：
 
-- Built `<system>` using `<tools>` to `<user/business outcome>`, with `<evidence or metric>`.
-- Improved `<workflow/problem>` by `<technical method>`, reducing/increasing `<metric>` when verified.
-- Designed `<architecture/component>` for `<constraint>`, enabling `<result>`.
+- 使用 `<工具>` 构建 `<系统>`，解决 `<用户/业务问题>`，并提供 `<证据或指标>`。
+- 通过 `<技术方法>` 改进 `<流程/问题>`；只有在已验证时才写降低或提升了 `<指标>`。
+- 针对 `<约束>` 设计 `<架构/组件>`，实现 `<结果>`。
 
-When metrics are not available, use a concrete artifact instead:
+没有指标时，使用具体产物：
 
-- "documented setup and troubleshooting steps"
-- "added source-cited answers"
-- "created reproducible sample inputs and outputs"
-- "split the project into task cards and learning notes"
+- “记录了安装、运行和排错步骤”
+- “增加了带来源引用的回答”
+- “创建了可复现的示例输入和输出”
+- “将项目拆成任务卡和学习笔记”
 
-## Honesty Rules
+## 诚实规则
 
-Do not inflate learning projects into production systems. Use language like:
+不要把学习项目夸大成生产系统。可以使用：
 
-- "implemented a prototype"
-- "built a learning project"
-- "reproduced and adapted"
-- "designed a portfolio-ready demo"
+- “实现了一个原型”
+- “完成了一个学习项目”
+- “参考并改造了开源案例”
+- “设计了适合放入作品集的演示项目”
 
-Avoid unsupported claims:
+避免没有依据的说法：
 
-- "served thousands of users"
-- "production-grade"
-- "enterprise-level"
-- "improved accuracy by X%" without a measured source
+- “服务过数千名用户”
+- “生产级”
+- “企业级”
+- 没有测量来源却声称“准确率提升了 X%”
 
-## Chinese Resume Style
+## 中文简历风格
 
-Prefer direct, evidence-heavy bullets:
+优先使用直接、证据充分的要点：
 
 - `基于 Python 实现 PDF 文档问答原型，完成文本读取、切分、检索与来源片段展示，沉淀 RAG 全流程学习笔记。`
 - `将岗位 JD、学习笔记和项目 README 纳入求职知识库，输出技能差距、面试复习清单和项目包装建议。`
 
-Keep each bullet focused on one achievement. Avoid empty adjectives such as "熟练", "深入", "负责多个" unless evidence follows.
+每条要点聚焦一个成果。除非后面有证据，不要使用“熟练”“深入”“负责多个”等空泛形容词。

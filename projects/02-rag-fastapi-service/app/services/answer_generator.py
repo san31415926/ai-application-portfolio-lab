@@ -66,14 +66,14 @@ class OllamaAnswerGenerator:
             with urlopen(request, timeout=self.timeout) as response:
                 result = json.loads(response.read().decode("utf-8"))
         except (HTTPError, URLError, TimeoutError, OSError) as exc:
-            raise RuntimeError(f"Ollama generation unavailable: {exc}") from exc
+            raise RuntimeError(f"Ollama 回答生成不可用：{exc}") from exc
 
         answer = result.get("message", {}).get("content", "").strip()
         if not answer:
             answer = result.get("response", "").strip()
         answer = self._extract_final_answer(answer)
         if not answer:
-            raise RuntimeError("Ollama did not return a final answer")
+            raise RuntimeError("Ollama 没有返回最终答案")
         answer = re.sub(r"\s*来源\d+\s*$", "", answer).strip()
         if "[来源" not in answer:
             answer += "\n\n" + " ".join(f"[来源{index}]" for index in range(1, len(sources) + 1))

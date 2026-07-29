@@ -1,45 +1,45 @@
-# Interview Rules
+# 面试规则
 
-## Question Types
+## 问题类型
 
-Generate questions in four groups:
+面试问题分为四组：
 
-- Project walkthrough: "Explain the system from input to output."
-- Technical depth: "Why chunking? Why embeddings? What fails?"
-- Tradeoffs: "What did you simplify? What would you improve?"
-- Behavioral proof: "What did you do when something broke?"
+- 项目讲解：“请从输入到输出解释整个系统。”
+- 技术深度：“为什么要切片？为什么使用 Embedding？哪些地方会失败？”
+- 技术取舍：“你简化了什么？下一步会如何改进？”
+- 行为证明：“某个功能出问题时你做了什么？”
 
-## STAR Answer Shape
+## STAR 答案结构
 
-Use:
+使用：
 
-- Situation: the project or job requirement
-- Task: the user's responsibility
-- Action: concrete technical steps
-- Result: evidence, artifact, learning, or metric
+- 情境：项目背景或岗位要求
+- 任务：用户需要负责的内容
+- 行动：具体技术步骤
+- 结果：证据、产物、学习结果或指标
 
-If the result is not measured, use an artifact-based result:
+如果结果没有测量数据，使用产物型结果：
 
-- "completed a runnable prototype"
-- "added source-backed answers"
-- "wrote troubleshooting rules"
-- "created a roadmap for the next project"
+- “完成了可运行的原型”
+- “增加了基于来源的回答”
+- “编写了排错规则”
+- “为下一个项目建立了路线图”
 
-## AI Application Engineer Follow-Ups
+## AI 应用工程师追问
 
-Ask follow-ups that expose whether the user really understands the project:
+提出能够检验用户是否真正理解项目的追问：
 
-- How do you know retrieval found the right context?
-- What happens when the PDF is scanned or badly formatted?
-- How would you evaluate answer quality?
-- How would you reduce hallucination?
-- Why did you choose this library or architecture?
-- How would you deploy this for a non-technical user?
+- 你如何知道检索找到了正确的上下文？
+- 如果 PDF 是扫描件或格式很差，会发生什么？
+- 你会如何评估回答质量？
+- 你会如何降低幻觉？
+- 为什么选择这个库或架构？
+- 如何为非技术用户部署这个应用？
 
-## Coaching Style
+## 辅导方式
 
-After generating questions, provide:
+生成问题后，同时提供：
 
-- A strong answer outline
-- A weak answer warning
-- The missing evidence the user should gather before interviews
+- 较好的回答提纲
+- 容易踩坑的回答提醒
+- 面试前需要收集的缺失证据

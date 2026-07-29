@@ -5,6 +5,7 @@ httpx
 python-multipart
 python-dotenv
 pypdf
+reportlab
 langchain
 langchain-openai
 langchain-community

@@ -1,65 +1,65 @@
-# Portability
+# 可迁移性
 
-## Goal
+## 目标
 
-Make Codex continuity depend on files that can be copied, synced, or committed, instead of depending on one chat history on one computer.
+让 Codex 的持续协作依赖可以复制、同步和提交的文件，而不是依赖一台电脑上的聊天记录。
 
-## What Must Move To A New Computer
+## 换电脑需要迁移什么
 
-Move or sync these two layers:
+迁移或同步两层内容：
 
-1. Project layer: the repository or folder containing code, docs, resumes, JDs, notes, and `.env.example`.
-2. Skill layer: the personal skill folder under the new computer's `~/.codex/skills/`.
+1. 项目层：包含代码、文档、简历、JD、笔记和 `.env.example` 的仓库或文件夹。
+2. 技能层：新电脑个人 Codex 技能目录下的技能文件夹。
 
-For this skill, the folder to preserve is:
+本技能需要保留的文件夹是：
 
 ```text
 ~/.codex/skills/ai-career-portfolio-coach/
 ```
 
-On Windows this is usually:
+Windows 通常是：
 
 ```text
-C:\Users\<you>\.codex\skills\ai-career-portfolio-coach\
+C:\Users\<用户名>\.codex\skills\ai-career-portfolio-coach\
 ```
 
-## Best Practice
+## 推荐方式
 
-Use GitHub or a private repo for the project. Use one of these for the skill:
+项目可以使用 GitHub 或私有仓库保存。技能可以采用以下方式之一：
 
-- Store a portable copy inside the project repository, for example `codex-skills/ai-career-portfolio-coach/`, then copy it into `~/.codex/skills/` on the new computer.
-- Put the skill folder in a private GitHub repo and clone/copy it into `~/.codex/skills/`.
-- Store the skill folder in a cloud-synced folder, then copy it into `~/.codex/skills/`.
-- Keep an exported `.zip` backup of `~/.codex/skills/ai-career-portfolio-coach/`.
+- 在项目仓库中保存可迁移副本，例如 `codex-skills/ai-career-portfolio-coach/`，换电脑后复制到 `~/.codex/skills/`。
+- 将技能文件夹放在私有 GitHub 仓库中，再克隆或复制到 `~/.codex/skills/`。
+- 将技能文件夹放在云同步目录中，换电脑后复制到 `~/.codex/skills/`。
+- 将 `~/.codex/skills/ai-career-portfolio-coach/` 导出为 `.zip` 备份。
 
-Do not commit secrets:
+不要提交秘密信息：
 
 - `.env`
-- API keys
-- private resumes with phone/email/address unless the repository is private and intentionally used for that purpose
+- API 密钥
+- 包含电话、邮箱和地址的私人简历，除非仓库明确设置为私有并专门用于保存它
 
-## Durable Memory Files
+## 持久化记忆文件
 
-For career projects, keep these files inside the project repository:
+职业项目应将以下文件保存在仓库中：
 
-- `docs/career-profile.md`: stable facts about the user, target roles, skills, constraints, resume material, and preferences
-- `docs/codex-continuity.md`: how to restore the project and skill on another computer
-- `docs/collaboration-rules.md`: how the user wants Codex to work
-- `docs/decision-log.md`: important choices and why they were made
+- `docs/career-profile.md`：用户稳定的事实、目标岗位、技能、限制、简历材料和偏好
+- `docs/codex-continuity.md`：换电脑后恢复项目和技能的方法
+- `docs/collaboration-rules.md`：用户希望 Codex 如何协作
+- `docs/decision-log.md`：重要决策及其原因
 
-When starting on another computer, ask Codex:
+在另一台电脑开始工作时，可以对 Codex 说：
 
 ```text
-Use $ai-career-portfolio-coach. Read docs/career-profile.md and docs/codex-continuity.md first, then continue helping me with this resume project.
+使用 $ai-career-portfolio-coach。先阅读 docs/career-profile.md 和 docs/codex-continuity.md，然后继续帮助我完成这个简历项目。
 ```
 
-## Restore Checklist
+## 恢复清单
 
-1. Install Codex on the new computer and sign in.
-2. Clone or copy the project repository.
-3. Copy `ai-career-portfolio-coach` into `~/.codex/skills/`.
-4. Recreate `.env` from `.env.example`.
-5. Install project dependencies.
-6. Open the project in Codex and ask it to read the continuity files.
+1. 在新电脑安装 Codex 并登录。
+2. 克隆或复制项目仓库。
+3. 将 `ai-career-portfolio-coach` 复制到 `~/.codex/skills/`。
+4. 根据 `.env.example` 重新创建 `.env`。
+5. 安装项目依赖。
+6. 在 Codex 中打开项目，并让它阅读持续协作文件。
 
-If the skill does not appear, restart Codex or start a new task after copying the folder.
+如果技能没有出现，复制完成后重启 Codex，或新建任务后再检查。

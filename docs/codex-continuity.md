@@ -1,37 +1,37 @@
-# Codex Continuity
+# Codex 持续协作说明
 
-This project is designed so Codex can continue helping from another computer.
+这个项目通过仓库文件保存上下文，换电脑后 Codex 也可以继续协作。
 
-## Restore On Another Computer
+## 在另一台电脑恢复
 
-1. Clone or copy this repository.
-2. Copy the bundled skill backup from this repository:
+1. 克隆或复制这个仓库。
+2. 复制仓库内备份的技能文件夹：
 
 ```text
 codex-skills/ai-career-portfolio-coach/
 ```
 
-into the new computer's personal Codex skills folder:
+将它放入新电脑的 Codex 个人技能目录：
 
 ```text
 ~/.codex/skills/ai-career-portfolio-coach/
 ```
 
-On Windows:
+Windows 路径通常是：
 
 ```text
-C:\Users\<you>\.codex\skills\ai-career-portfolio-coach\
+C:\Users\<用户名>\.codex\skills\ai-career-portfolio-coach\
 ```
 
-3. Create `.env` from `.env.example` and fill local API keys.
-4. Install project dependencies.
-5. Start a new Codex task in this repository and say:
+3. 根据 `.env.example` 创建 `.env`，填写本机需要的配置。
+4. 安装项目依赖。
+5. 在这个仓库中新建 Codex 任务，并发送：
 
 ```text
-Use $ai-career-portfolio-coach. Read docs/career-profile.md and docs/codex-continuity.md first, then continue helping me with this resume project.
+使用 $ai-career-portfolio-coach。先阅读 docs/career-profile.md 和 docs/codex-continuity.md，然后继续帮助我完成这个简历项目。
 ```
 
-## What Codex Should Read First
+## Codex 首先应阅读的文件
 
 - `docs/career-profile.md`
 - `docs/collaboration-rules.md`
@@ -39,25 +39,25 @@ Use $ai-career-portfolio-coach. Read docs/career-profile.md and docs/codex-conti
 - `docs/git-workflow.md`
 - `docs/learning-roadmap.md`
 - `projects/02-rag-fastapi-service/README.md`
-- root `README.md`
+- 根目录 `README.md`
 
-Current flagship project:
+当前旗舰项目：
 
 ```text
 projects/02-rag-fastapi-service/  # LearningHub
 ```
 
-## What To Keep Updated
+## 需要持续更新的内容
 
-- Target roles and JD links
-- Real resume facts
-- Project status
-- Screenshots or sample outputs
-- Decisions that affect resume positioning
+- 目标岗位和 JD 链接
+- 真实简历事实
+- 项目状态
+- 截图或示例输出
+- 影响简历定位的技术决策
 
-## Do Not Commit
+## 不要提交的内容
 
 - `.env`
-- API keys
-- private resumes with sensitive contact information, unless this repository is intentionally private
-- raw personal documents that should not be shared
+- API 密钥
+- 包含敏感联系方式的私人简历，除非仓库明确设置为私有并专门用于保存它
+- 不应共享的原始个人文档

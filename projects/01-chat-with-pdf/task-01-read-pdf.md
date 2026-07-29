@@ -1,6 +1,6 @@
-# Task 01: Read A PDF
+# 任务 01：读取 PDF
 
-## Goal
+## 目标
 
 先不要急着做完整 RAG。
 
@@ -8,7 +8,7 @@
 
 > 用 Python 读取一个 PDF，并打印前 500 个字符。
 
-## Material
+## 练习素材
 
 练习 PDF：
 
@@ -16,21 +16,21 @@
 samples/pdf/ai_application_engineer_jd.pdf
 ```
 
-## Why This Task Matters
+## 为什么要做这一步
 
 RAG 的第一步不是大模型，也不是向量数据库，而是拿到干净的文本。
 
 如果 PDF 文本读取失败，后面的 chunk、embedding、retriever 都没有意义。
 
-## Your Steps
+## 操作步骤
 
-### 1. Create A Virtual Environment
+### 1. 创建虚拟环境
 
 ```powershell
 python -m venv .venv
 ```
 
-### 2. Activate It
+### 2. 激活虚拟环境
 
 ```powershell
 .venv\Scripts\Activate.ps1
@@ -44,7 +44,7 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 
 然后再激活虚拟环境。
 
-### 3. Install Only What You Need
+### 3. 只安装当前需要的依赖
 
 这一步先不要安装全部依赖，只安装读取 PDF 需要的包：
 
@@ -52,7 +52,7 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 pip install pypdf python-dotenv
 ```
 
-### 4. Create A Small Script
+### 4. 创建一个小脚本
 
 在这个目录下创建：
 
@@ -78,17 +78,17 @@ for page in reader.pages:
 print(text[:500])
 ```
 
-## Checkpoint
+## 检查点
 
-如果你看到类似下面的信息，就说明成功了：
+如果你看到包含“岗位说明”“公司背景”和“FlowAI”等内容，就说明成功了：
 
 ```text
-AI Application Engineer Job Description
-Company Background
-FlowAI is a small software company...
+AI 应用工程师岗位说明
+公司背景
+FlowAI 是一家为销售、运营和客户支持团队构建内部 AI 工具的小型软件公司……
 ```
 
-## Reflection Questions
+## 复盘问题
 
 完成后，你要能回答：
 

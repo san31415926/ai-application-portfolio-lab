@@ -1,10 +1,10 @@
-# Collaboration Rules
+# 协作规则
 
 这个文件记录用户和 Codex 一起学习、开发这个项目时的长期约定。
 
 如果以后换电脑、重新打开项目、或者上下文丢失，先阅读这个文件。
 
-## User Goal
+## 用户目标
 
 用户想通过课程项目和开源案例学习 AI 应用开发，并沉淀成适合简历展示的真实项目。
 
@@ -16,7 +16,7 @@
 - LLM 应用开发
 - RAG / Agent / 数据分析助手相关岗位
 
-## Learning Style
+## 学习方式
 
 - 不要一下子把完整项目全部做完。
 - 用任务卡的方式一步一步引导。
@@ -25,21 +25,21 @@
 - 优先让用户理解流程，再逐步加功能。
 - 遇到代码时，要鼓励用户先尝试，再根据报错和结果调整。
 
-## Project Direction
+## 项目方向
 
 优先选择简历价值高、学习曲线适中的项目：
 
 - LearningHub
-- Chat with PDF / Basic RAG
-- Data Analysis Agent
-- Web Research Agent
-- Agentic RAG
+- PDF 对话 / 基础 RAG
+- 数据分析 Agent
+- Web 研究 Agent
+- Agent 化 RAG
 
 当前旗舰项目是 `projects/02-rag-fastapi-service`。它已从纯 RAG FastAPI 服务升级为参考 `RMA-MUN/RAGNotebook` 产品方向的 `LearningHub`。项目采用 `embeddinggemma:300m` 检索和 `qwen2.5:3b` 来源约束生成，定位为用户自己能讲清楚的轻量版 Notebook RAG，不直接照搬课程代码或完整开源项目。
 
 暂时避免一开始就做依赖复杂、成本高、难调试的项目。
 
-## GitHub And Sync Rules
+## GitHub 与同步规则
 
 - 项目要持续同步到 GitHub。
 - 每完成一个清晰的小阶段，就 commit 并 push。
@@ -47,7 +47,7 @@
 - 换电脑时，通过 GitHub clone 仓库继续。
 - 不要提交 `.env`、API key、私人文件或大体积临时文件。
 
-## Troubleshooting Rule
+## 排错规则
 
 遇到跑不通时，不要急着大改代码。
 
@@ -61,7 +61,7 @@
 - 找到原因后只做最小必要修改。
 - 验证成功后记录问题和解决方法。
 
-## Memory Rule
+## 记忆规则
 
 用户以后说过的重要注意事项、偏好、项目约定、排错习惯，都要记录到仓库文档中。
 

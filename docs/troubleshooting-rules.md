@@ -1,10 +1,10 @@
-# Troubleshooting Rules
+# 排错规则
 
 这个文件记录我们学习项目时的排错约定。
 
 以后如果换电脑、换环境、换依赖版本，先看这里。
 
-## Core Rule
+## 核心规则
 
 遇到项目跑不通，不要急着大改代码。
 
@@ -24,7 +24,7 @@
 7. 运行验证命令。
 8. 把问题、原因、解决方法记录到学习笔记。
 
-## Why GitHub First
+## 为什么优先查 GitHub
 
 LangChain、Chroma、OpenAI SDK、Streamlit 这类库更新很快。
 
@@ -37,7 +37,7 @@ LangChain、Chroma、OpenAI SDK、Streamlit 这类库更新很快。
 
 所以遇到奇怪问题时，要优先确认 GitHub issue 或官方文档里有没有现成解释。
 
-## How To Ask Codex For Help
+## 如何向 Codex 提供排错信息
 
 把这些信息发给 Codex：
 

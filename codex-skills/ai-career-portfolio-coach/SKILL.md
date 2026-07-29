@@ -1,92 +1,92 @@
 ---
 name: ai-career-portfolio-coach
-description: "Coach Chinese or English AI career materials: resume/CV rewriting, target job description matching, GitHub portfolio packaging, project storytelling, interview prep, and cross-computer continuity. Use when the user mentions 简历, 履历, CV, resume, 岗位JD, 求职, 作品集, GitHub项目, AI应用工程师, portfolio, interview prep, or asks how to preserve reusable AI workflows across computers."
+description: "辅导中文或英文 AI 求职材料：简历改写、目标岗位匹配、GitHub 作品集包装、项目表达、面试准备和换电脑后的持续协作。用户提到简历、履历、CV、resume、岗位 JD、求职、作品集、GitHub 项目、AI 应用工程师、portfolio、面试准备，或询问如何保留可复用的 AI 工作流时使用。"
 ---
 
-# AI Career Portfolio Coach
+# AI 求职作品集辅导
 
-## Overview
+## 作用
 
-Turn career work into a reusable workflow: analyze a target role, mine verified evidence from the user's project files, rewrite resume/project material, prepare interview proof, and preserve the working context so Codex can continue on another computer.
+把求职工作变成可复用的流程：分析目标岗位，依据项目文件提取已验证证据，改写简历和项目材料，准备面试证明，并保留工作上下文，让 Codex 可以在另一台电脑继续协作。
 
-Default to Chinese output when the user writes in Chinese. Do not invent experience, metrics, employers, education, project outcomes, or certifications. Mark missing evidence as `需要补充` and suggest specific facts to collect.
+用户使用中文时默认用中文回答。不要编造经历、指标、雇主、教育经历、项目结果或证书。对于缺少的事实标记为“需要补充”，并提出具体的收集建议。
 
-## Workflow
+## 工作流程
 
-### 1. Triage Inputs
+### 1. 检查输入
 
-Identify what the user provided:
+确认用户提供了哪些内容：
 
-- Target JD or role title
-- Existing resume/CV or raw experience notes
-- GitHub repository, README, project docs, screenshots, demos, or code
-- Career profile files such as `docs/career-profile.md`, `docs/codex-continuity.md`, `docs/collaboration-rules.md`, or project decision logs
+- 目标岗位 JD 或岗位名称
+- 现有简历、CV 或原始经历记录
+- GitHub 仓库、README、项目文档、截图、演示或代码
+- 职业资料文件，例如 `docs/career-profile.md`、`docs/codex-continuity.md`、`docs/collaboration-rules.md` 或项目决策记录
 
-If the current workspace has an AI portfolio repository, inspect its `README.md`, `docs/`, `projects/`, and sample JD/source files before rewriting. Ask a concise question only when a missing fact blocks a responsible answer.
+如果当前工作区有 AI 作品集仓库，改写前先查看它的 `README.md`、`docs/`、`projects/` 和岗位 JD/来源素材。只有缺失事实会阻碍可靠回答时，才提出简短问题。
 
-### 2. Analyze Target Role
+### 2. 分析目标岗位
 
-Read `references/resume-rules.md` when optimizing resume/CV material.
+优化简历时阅读 `references/resume-rules.md`。
 
-Extract:
+提取：
 
-- Role positioning and seniority
-- Must-have skills, nice-to-have skills, tools, frameworks, and domain keywords
-- Evidence the resume must prove
-- Gaps that should become learning tasks or portfolio tasks
+- 岗位定位和级别
+- 必备技能、加分技能、工具、框架、平台和领域关键词
+- 简历必须证明的能力
+- 应该转化为学习任务或作品集任务的缺口
 
-### 3. Mine Verified Evidence
+### 3. 提取已验证证据
 
-Separate evidence into:
+将证据分为：
 
-- `已证实`: facts present in the user's files or message
-- `可合理包装`: project work that can be reframed without exaggeration
-- `需要补充`: metrics, deployment details, screenshots, user impact, or technical depth that are missing
-- `不应写入`: claims that are unsupported or too risky
+- `已证实`：用户文件或消息中明确存在的事实
+- `可合理包装`：不夸大的项目重新表述
+- `需要补充`：缺少的指标、部署信息、截图、用户影响或技术深度
+- `不应写入`：没有依据或风险过高的说法
 
-### 4. Rewrite Resume Material
+### 4. 改写简历材料
 
-Use the structure: action + technical method + business/user impact + evidence/metric. When metrics are absent, either omit them or mark a bracketed placeholder such as `[补充: 处理文档数量/响应时间/准确率]`.
+使用“行动 + 技术方法 + 用户/业务价值 + 证据/指标”的结构。没有指标时可以省略，或使用类似 `[补充：处理文档数量/响应时间/准确率]` 的占位内容。
 
-Prefer deliverables that are easy to paste into a resume:
+优先产出便于直接粘贴进简历的材料：
 
-- JD keyword map
-- Resume headline/profile
-- Skills section
-- Project bullets
-- Before/after bullet rewrites
-- Missing evidence checklist
+- JD 关键词对照表
+- 简历标题或个人简介
+- 技能部分
+- 项目要点
+- 要点改写前后对比
+- 缺失证据清单
 
-### 5. Package GitHub Portfolio
+### 5. 包装 GitHub 作品集
 
-Read `references/portfolio-project-rules.md` when improving a repository, project README, demo story, or portfolio plan.
+改进仓库、项目 README、演示故事或作品集计划时，阅读 `references/portfolio-project-rules.md`。
 
-Optimize for recruiter and interviewer scanning:
+让招聘者和面试官能够快速看到：
 
-- Clear problem statement
-- Concrete architecture and workflow
-- Setup/run commands
-- Screenshots or sample input/output when available
-- Resume-ready project summary
-- Interview-ready explanation of tradeoffs and next improvements
+- 清晰的问题定义
+- 具体的架构和工作流
+- 安装与运行命令
+- 可用时提供截图或示例输入输出
+- 适合写进简历的项目总结
+- 对技术取舍和下一步改进的面试级解释
 
-### 6. Prepare Interview Proof
+### 6. 准备面试证明
 
-Read `references/interview-rules.md` when generating interview questions, STAR answers, technical walkthroughs, or follow-up drills.
+生成面试问题、STAR 答案、技术讲解或追问时，阅读 `references/interview-rules.md`。
 
-Produce questions that test real understanding of the user's project, not generic memorization.
+问题应检验用户是否真正理解自己的项目，而不是要求死记通用答案。
 
-### 7. Preserve Continuity
+### 7. 保留持续协作信息
 
-Read `references/portability.md` when the user asks about changing computers, syncing workflows, GitHub backup, reusable skills, or "how can you keep helping me later".
+用户询问换电脑、同步工作流、GitHub 备份、可复用技能或“以后如何继续帮助我”时，阅读 `references/portability.md`。
 
-Keep durable memory in files, not only in chat. Prefer updating project docs such as:
+把长期记忆保存在文件中，而不是只保存在聊天记录里。优先更新：
 
 - `docs/career-profile.md`
 - `docs/codex-continuity.md`
 - `docs/collaboration-rules.md`
 - `docs/decision-log.md`
 
-## Output Style
+## 输出风格
 
-Use compact tables for JD matching and evidence gaps. Use paste-ready bullets for resumes. Keep suggestions specific enough that the user can act immediately.
+JD 匹配和证据缺口使用紧凑表格。简历内容使用可直接粘贴的要点。建议要具体到用户能够立即执行。

@@ -4,7 +4,7 @@ from app.schemas import QueryRequest, QueryResponse
 from app.services.rag_service import rag_service
 
 
-router = APIRouter(prefix="/api/v1/chat", tags=["chat"])
+router = APIRouter(prefix="/api/v1/chat", tags=["问答"])
 
 
 @router.post("/query", response_model=QueryResponse)

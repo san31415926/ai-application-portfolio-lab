@@ -1,48 +1,48 @@
-# Career Profile
+# 职业资料
 
-Use this file as durable context for Codex. Keep facts specific and update it whenever resume direction changes.
+这个文件用于保存 Codex 可以长期使用的背景信息。内容必须具体可信，简历方向变化时及时更新。
 
-## Target Roles
+## 目标岗位
 
-- Primary target: Junior AI Application Engineer
-- Secondary targets: AI application developer, LLM application engineer, RAG prototype developer
-- Preferred industries: AI tools, internal productivity tools, sales/operations/customer-support tooling
-- Preferred city/remote:
+- 首选岗位：初级 AI 应用工程师
+- 备选岗位：AI 应用开发、LLM 应用工程、RAG 原型开发
+- 偏好行业：AI 工具、内部效率工具、销售/运营/客户支持工具
+- 偏好城市或远程：
 
-## Current Positioning
+## 当前定位
 
-- Current background: Building a resume-ready AI application engineering portfolio.
-- Strongest technical evidence: `projects/02-rag-fastapi-service` now implements LearningHub with upload, chunking, Ollama local embedding retrieval (`embeddinggemma:300m`), selectable grounded local answer generation, source citations, refusal and fallback behavior, note CRUD, related source retrieval, a Chinese workbench, sample corpus loading, model discovery, and tests.
-- Strongest project evidence: The flagship project is now modeled after `RMA-MUN/RAGNotebook`, but simplified into a defensible portfolio prototype instead of copying the full MySQL/Redis/React/Tiptap stack.
-- Biggest gap to close: Persist vectors with Chroma, persist notes in SQLite/MySQL, add screenshots, extend local LLM generation to writing assistance, and document evaluation cases.
+- 当前背景：正在建设适合写入简历的 AI 应用工程作品集。
+- 最强技术证据：`projects/02-rag-fastapi-service` 已实现 LearningHub，包含文档上传、文本切分、Ollama 本地 Embedding 检索（`embeddinggemma:300m`）、可选择的来源约束本地回答生成、来源引用、拒答与降级、笔记增删改查、相关来源检索、中文工作台、示例资料加载、模型发现和测试。
+- 最强项目证据：旗舰项目参考 `RMA-MUN/RAGNotebook`，但简化为可以独立讲清楚的作品集原型，没有直接照搬完整的 MySQL/Redis/React/Tiptap 技术栈。
+- 当前主要缺口：使用 Chroma 持久化向量，使用 SQLite/MySQL 持久化笔记，补充截图，扩展本地 LLM 写作辅助，并记录评估案例。
 
-## Skills To Highlight
+## 需要重点展示的技能
 
-- Programming: Python, file parsing, command-line workflow
-- AI/LLM: RAG pipeline, chunking, Ollama local embedding retrieval, grounded Qwen generation, source citation, low-confidence refusal, generation fallback, note-related retrieval
-- Data: Markdown/TXT/PDF ingestion, custom LearningHub tutorial corpus with 27 Markdown learning documents
-- Web/backend: FastAPI, REST API design, OpenAPI docs, static Chinese notebook workbench, router/service layering
-- Tools: Git, `.env.example`, requirements management, troubleshooting docs
+- 编程：Python、文件解析、命令行工作流
+- AI/LLM：RAG 流程、文本切分、Ollama 本地 Embedding 检索、来源约束的 Qwen 生成、来源引用、低置信度拒答、生成降级、笔记关联检索
+- 数据：Markdown/TXT/PDF 入库、自建 LearningHub 教程库、27 份 Markdown 学习文档
+- Web/后端：FastAPI、REST API 设计、OpenAPI 文档、中文静态 Notebook 工作台、路由与服务分层
+- 工具：Git、`.env.example`、依赖管理、排错文档
 
-## Portfolio Projects
+## 作品集项目
 
-| Project | Status | Resume value | Missing evidence |
+| 项目 | 状态 | 简历价值 | 缺少的证据 |
 | --- | --- | --- | --- |
-| LearningHub | MVP runnable | Shows FastAPI backend design, Chinese notebook workbench, document upload, chunking, two Ollama local models, grounded generation, source citations, refusal behavior, fallback, note CRUD, sample tutorial corpus, API docs, and unit tests | Chroma upgrade, persistent DB, screenshots, evaluation notes, deployment URL |
-| Chat with PDF / AI JD Knowledge Base | Earlier prototype | Shows PDF/Markdown ingestion, chunking, local retrieval, SQLite demo querying, source snippets, and low-confidence refusal | De-emphasize in resume unless needed as background |
+| LearningHub | MVP 可运行 | 展示 FastAPI 后端设计、中文 Notebook 工作台、文档上传、文本切分、两个 Ollama 本地模型、来源约束生成、来源引用、拒答、降级、笔记增删改查、教程样例、API 文档和单元测试 | Chroma 升级、持久化数据库、截图、评估记录、部署地址 |
+| PDF 对话 / AI JD 知识库 | 早期原型 | 展示 PDF/Markdown 入库、文本切分、本地检索、SQLite 查询、来源片段和低置信度拒答 | 简历中作为背景经历，不作为主项目展开 |
 
-## Resume Source Facts
+## 简历事实来源
 
-Add only facts that are true and defensible in interviews.
+只添加真实且能够在面试中解释清楚的事实。
 
-- Education:
-- Work experience:
-- Certifications:
-- Measured achievements: `projects/02-rag-fastapi-service` uses Ollama `embeddinggemma:300m` for 768-dimensional retrieval vectors and a selectable local chat model for grounded Chinese answers, with sparse retrieval and extractive-answer fallbacks. It includes 27 tutorial Markdown documents, 5 sample notes, source citations, low-confidence refusal, batch indexing, note workflows, model discovery, OpenAPI docs, and 7 passing API tests. A local smoke test indexed the 27-document corpus in about 6 seconds, answered a C-language question with `qwen2.5:3b`, and correctly refused an unrelated Mars-treaty query. Earlier prototype: sample JD PDF read successfully, local JD knowledge base indexes default documents, SQLite demo database contains 5 roles and 16 skills, 8 unit tests pass.
-- Links:
+- 教育经历：
+- 工作经历：
+- 证书：
+- 已验证成果：`projects/02-rag-fastapi-service` 使用 Ollama 的 `embeddinggemma:300m` 生成 768 维检索向量，并使用可选择的本地聊天模型生成有来源约束的中文回答，同时保留稀疏检索和提取式回答降级。项目包含 27 份 Markdown 教程、5 条示例笔记、来源引用、低置信度拒答、批量建索引、笔记工作流、模型发现、OpenAPI 文档和 7 项通过的 API 测试。本地冒烟测试约 6 秒完成 27 份文档建索引，使用 `qwen2.5:3b` 回答了 C 语言问题，并正确拒绝了无关的火星条约问题。早期原型已成功读取示例岗位 JD PDF，本地 JD 知识库可以索引默认文档，SQLite 模拟数据库包含 5 个岗位和 16 项技能，8 项测试通过。
+- 链接：
 
-## Writing Preferences
+## 写作偏好
 
-- Default language: Chinese
-- Resume style: concise, evidence-heavy, no exaggerated claims
-- Interview prep style: ask practical follow-up questions based on my actual projects
+- 默认语言：中文
+- 简历风格：简洁、证据充分、不夸大
+- 面试准备方式：基于真实项目提出实用的追问

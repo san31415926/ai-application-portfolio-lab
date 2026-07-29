@@ -1,43 +1,43 @@
-# Decision Log
+# 技术决策记录
 
-## 2026-07-27: Pivot Flagship To RAG Notebook Lite
+## 2026-07-27：将旗舰项目调整为轻量版 RAG Notebook
 
-- User preferred `RMA-MUN/RAGNotebook` as the target style for a resume project.
-- Decision: keep the existing FastAPI RAG service as the base and upgrade it into a lightweight notebook product instead of copying the full upstream stack.
-- Scope for MVP: knowledge upload, chunking, retrieval QA, source citations, note CRUD, note search, related source retrieval, deterministic writing assistance, and review scheduling.
-- Deferred: React/Tiptap frontend, MySQL/Redis, real embeddings, ChromaDB, true LLM streaming, authentication, and deployment.
-- Resume positioning: "reproduced and adapted a RAG Notebook-style prototype" rather than "built a production-grade system."
+- 用户偏好 `RMA-MUN/RAGNotebook` 的产品形态，希望把它发展为适合写入简历的项目。
+- 决策：保留已有 FastAPI RAG 服务作为基础，将它升级为轻量级 Notebook 产品，而不是照搬上游项目的完整技术栈。
+- MVP 范围：知识文档上传、文本切分、检索问答、来源引用、笔记增删改查、笔记搜索、相关来源检索、确定性写作辅助和回顾提醒。
+- 暂缓内容：React/Tiptap 前端、MySQL/Redis、真实 Embedding、ChromaDB、真正的 LLM 流式输出、身份认证和部署。
+- 简历定位：使用“参考并改造 RAG Notebook 风格原型”，不宣称“构建生产级系统”。
 
-## 2026-07-28: Align Retrieval Story With Embeddings
+## 2026-07-28：让检索链路对齐 Embedding 思路
 
-- User said they had not studied earlier keyword-style retrieval much, but had seen LangChain Embeddings.
-- Decision: rename and reshape the flagship retriever as `EmbeddingRetriever` with a local sparse embedding model, so the runnable demo follows the same high-level flow as LangChain Embeddings + vector search.
-- Scope: keep the service offline and testable without API keys; generate vectors for chunks and queries, then rank by cosine similarity and return source chunks.
-- Deferred: replace `LocalSparseEmbeddingModel` with LangChain `Embeddings`, add Chroma persistence, and add retrieval evaluation cases.
-- Interview positioning: "I first used a local embedding-style implementation to understand and verify the RAG pipeline, then planned a LangChain + Chroma upgrade" rather than "I built a production vector database system."
+- 用户没有系统学习过早期的关键词检索，但接触过 LangChain Embeddings。
+- 决策：将旗舰项目的检索器命名并调整为 `EmbeddingRetriever`，通过本地稀疏 Embedding 模型模拟 LangChain Embeddings 加向量检索的完整流程。
+- 范围：保持服务可以离线运行、无需 API 密钥；为文档片段和问题生成向量，再用余弦相似度排序并返回来源片段。
+- 暂缓内容：用 LangChain `Embeddings` 替换 `LocalSparseEmbeddingModel`、增加 Chroma 持久化、补充检索评估案例。
+- 面试定位：表述为“先用本地 Embedding 风格实现理解和验证 RAG 流程，再规划 LangChain 加 Chroma 的升级”，不宣称“已经构建生产级向量数据库系统”。
 
-## 2026-07-28: Add Ollama Local Embedding Model
+## 2026-07-28：加入 Ollama 本地 Embedding 模型
 
-- User wanted to run a small local model instead of only using the sparse embedding fallback.
-- Decision: install Ollama locally and pull `embeddinggemma:300m`; connect `EmbeddingRetriever` to Ollama `/api/embed` by default.
-- Scope: document chunks and user queries are embedded by Ollama, ranked with cosine similarity, and returned with source chunks; if Ollama is unavailable, the service falls back to `LocalSparseEmbeddingModel`.
-- Validation: `embeddinggemma:300m` returned 768-dimensional embeddings; sample queries for C language variables and tomato scrambled eggs retrieved the expected source files, while an unrelated Mars treaty query refused with `RAG_MIN_SCORE=0.2`.
-- Deferred: add Chroma persistence, retrieval evaluation cases, and a real local or remote LLM for answer generation.
-- Interview positioning: "I used Ollama to run a local embedding model for the retrieval layer, then kept a sparse fallback so the demo and tests still run without model setup."
+- 用户希望运行小型本地模型，而不是只使用稀疏 Embedding 兜底。
+- 决策：本地安装 Ollama 并拉取 `embeddinggemma:300m`，默认通过 Ollama `/api/embed` 接入 `EmbeddingRetriever`。
+- 范围：使用 Ollama 为文档片段和用户问题生成向量，用余弦相似度排序并返回来源片段；Ollama 不可用时退回 `LocalSparseEmbeddingModel`。
+- 验证：`embeddinggemma:300m` 返回 768 维向量；C 语言变量和番茄炒蛋问题可以检索到预期来源；无关的火星条约问题在 `RAG_MIN_SCORE=0.2` 下被拒答。
+- 暂缓内容：增加 Chroma 持久化、检索评估案例，以及真正的本地或远程 LLM 回答生成。
+- 面试定位：表述为“使用 Ollama 运行本地 Embedding 模型完成检索层，同时保留稀疏检索兜底，让演示和测试不依赖模型环境”。
 
-## 2026-07-28: Add Local Grounded Answer Generation
+## 2026-07-28：加入来源约束的本地回答生成
 
-- User wanted a second small local AI model so the project could generate answers instead of only extracting source sentences.
-- Decision: test `qwen3:4b` for better Chinese answer quality, then use `qwen2.5:3b` as the default generation model because the current Ollama version exposes Qwen3 reasoning text instead of a stable final answer. Keep the same grounded generation flow: only call the model after retrieval passes the relevance threshold and pass the question plus numbered source chunks to Ollama `/api/chat`.
-- Failure handling: unrelated queries are rejected before generation, and an unavailable generation model falls back to extractive source-based answers.
-- Performance improvement: sample documents are now indexed in one batch instead of rebuilding vectors after every file; the 27-document sample corpus indexed in about 6 seconds in the local smoke test.
-- Validation: the project now uses `qwen2.5:3b` for direct Chinese answer generation, with an extractive fallback and reasoning cleanup tests; `qwen3:4b` remains installed for later Ollama upgrades. The unrelated Mars-treaty query remains refused.
-- Interview positioning: "I separated retrieval and generation into two small Ollama models, constrained generation to retrieved evidence, and added refusal and fallback paths."
+- 用户希望加入第二个小型本地 AI 模型，让项目能够生成回答，而不是只提取原文句子。
+- 决策：先测试回答质量更好的 `qwen3:4b`，再将 `qwen2.5:3b` 设为默认生成模型，因为当前 Ollama 版本下 Qwen3 可能把思考文本混入最终内容。保留同一套来源约束流程：只有检索通过相关度阈值后才调用模型，并把问题和带编号的来源片段传给 Ollama `/api/chat`。
+- 失败处理：无关问题在生成前直接拒答；生成模型不可用时退回基于来源的提取式回答。
+- 性能改进：示例文档改为批量建立索引，不再每加载一个文件就重建向量；本地 27 份示例文档建立索引约需 6 秒。
+- 验证：项目使用 `qwen2.5:3b` 生成直接的中文回答，同时保留提取式降级和思考文本清理测试；`qwen3:4b` 仍然安装在本机，等待后续 Ollama 版本优化。无关的火星条约问题仍然会被拒答。
+- 面试定位：表述为“将检索和生成拆分为两个 Ollama 本地模型，让生成只基于检索证据，并增加拒答和降级路径”。
 
-## 2026-07-29: Add Model Selection To The Workbench
+## 2026-07-29：在工作台加入模型选择
 
-- User wanted to compare local answer models directly from the LearningHub page.
-- Decision: add `GET /api/v1/models` to discover installed Ollama generation models, add `chat_model` to the query request, and keep the selection scoped to one request instead of mutating the service default.
-- Safety boundary: models without generation capability, such as `embeddinggemma:300m`, are excluded from the picker; an uninstalled requested model returns HTTP 400; low-relevance questions are still refused before generation.
-- UI: add a Chinese "回答模型" selector, show the selected model in the answer status, and add a static asset version marker so browsers do not keep the old JavaScript after an update.
-- Validation: the local page displayed `qwen2.5:3b`, `qwen3:4b`, and `qwen3:0.6b`; selecting another model changed the request value; the selected `qwen2.5:3b` path returned `answer_model=qwen2.5:3b`; API tests increased to 7.
+- 用户希望直接在 LearningHub 页面比较不同本地回答模型。
+- 决策：增加 `GET /api/v1/models` 发现已安装的 Ollama 生成模型，在查询请求中增加 `chat_model`，并将选择范围限定在单次请求内，不修改服务默认配置。
+- 安全边界：没有生成能力的模型，例如 `embeddinggemma:300m`，不进入选择列表；请求未安装的模型时返回 HTTP 400；低相关度问题仍然在调用生成模型前拒答。
+- 页面：增加中文“回答模型”选择框，在回答状态中显示当前模型，并给静态资源增加版本标记，避免浏览器继续使用旧版 JavaScript。
+- 验证：本地页面显示 `qwen2.5:3b`、`qwen3:4b` 和 `qwen3:0.6b`；切换模型会改变请求值；使用 `qwen2.5:3b` 时返回 `answer_model=qwen2.5:3b`；API 测试增加到 7 项。

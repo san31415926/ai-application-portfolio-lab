@@ -4,7 +4,7 @@ from app.schemas import ApiResponse
 from app.services.rag_service import rag_service
 
 
-router = APIRouter(prefix="/api/v1/models", tags=["models"])
+router = APIRouter(prefix="/api/v1/models", tags=["模型"])
 
 
 @router.get("", response_model=ApiResponse)

@@ -39,4 +39,4 @@ app = create_app()
 
 @app.get("/")
 def root() -> dict[str, str]:
-    return {"message": "LearningHub is running", "docs": "/docs", "workbench": "/app/"}
+    return {"message": "LearningHub 运行正常", "docs": "/docs", "workbench": "/app/"}

@@ -21,9 +21,9 @@ def read_pdf_text(pdf_path: Path) -> str:
 def main() -> None:
     text = read_pdf_text(PDF_PATH)
 
-    print(f"PDF path: {PDF_PATH}")
-    print(f"Pages: {len(PdfReader(PDF_PATH).pages)}")
-    print(f"Characters: {len(text)}")
+    print(f"PDF 路径：{PDF_PATH}")
+    print(f"页数：{len(PdfReader(PDF_PATH).pages)}")
+    print(f"字符数：{len(text)}")
     print("-" * 60)
     print(text[:500])
 

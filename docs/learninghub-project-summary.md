@@ -21,7 +21,7 @@ LearningHub 是一个参考 `RMA-MUN/RAGNotebook` 产品方向重新实现的中
 ```text
 文档上传
   -> 文本解析与清洗
-  -> chunk 切分
+  -> 文本切分
   -> Ollama embeddinggemma:300m 生成向量
   -> 余弦相似度检索
   -> 低相关度拒答
@@ -56,7 +56,7 @@ Ollama 不可用时，检索层会退回本地 sparse embedding；生成模型�
 
 ## 简历描述
 
-- 基于 FastAPI 设计中文 RAG 知识库，支持 TXT、Markdown、PDF 文档上传、文本切片、Ollama embedding 检索和来源片段返回。
+- 基于 FastAPI 设计中文 RAG 知识库，支持 TXT、Markdown、PDF 文档上传、文本切分、Ollama embedding 检索和来源片段返回。
 - 接入 Ollama 本地生成模型，增加 `/api/v1/models` 模型发现接口和页面模型选择器，支持按请求切换聊天模型且不改变服务默认配置。
 - 设计低相关度拒答、生成失败降级和来源约束提示，避免将知识库外问题交给模型随意回答。
 - 实现 Notebook 笔记管理、相关来源检索、示例教程库和 7 项 API 测试，形成可运行、可演示、可解释的 AI 应用原型。

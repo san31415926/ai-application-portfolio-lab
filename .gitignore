@@ -26,6 +26,7 @@ outputs/
 *.db
 chroma/
 vectorstore/
+projects/01-chat-with-pdf/ui-preview*.png
 
 # Notebooks
 .ipynb_checkpoints/

@@ -6,7 +6,9 @@
 
 ## User Goal
 
-用户想通过 `awesome-llm-apps` 里的案例学习 AI 应用开发，并沉淀成适合简历展示的项目。
+用户想通过课程项目和开源案例学习 AI 应用开发，并沉淀成适合简历展示的真实项目。
+
+重要偏好：不要把提示词、学习资料、课程笔记或职业规划数据库当作主项目。主项目必须像一个可以运行、可以测试、可以演示 API 或界面的工程作品。
 
 目标岗位方向：
 
@@ -27,12 +29,13 @@
 
 优先选择简历价值高、学习曲线适中的项目：
 
-- Chat with PDF
-- Basic RAG
-- AI Job Description Knowledge Base
+- LearningHub
+- Chat with PDF / Basic RAG
 - Data Analysis Agent
 - Web Research Agent
 - Agentic RAG
+
+当前旗舰项目是 `projects/02-rag-fastapi-service`。它已从纯 RAG FastAPI 服务升级为参考 `RMA-MUN/RAGNotebook` 产品方向的 `LearningHub`。项目采用 `embeddinggemma:300m` 检索和 `qwen2.5:3b` 来源约束生成，定位为用户自己能讲清楚的轻量版 Notebook RAG，不直接照搬课程代码或完整开源项目。
 
 暂时避免一开始就做依赖复杂、成本高、难调试的项目。
 
@@ -40,7 +43,7 @@
 
 - 项目要持续同步到 GitHub。
 - 每完成一个清晰的小阶段，就 commit 并 push。
-- 保持 README、任务卡、学习笔记清楚。
+- 保持 README、运行命令、接口说明、测试和项目取舍清楚。
 - 换电脑时，通过 GitHub clone 仓库继续。
 - 不要提交 `.env`、API key、私人文件或大体积临时文件。
 

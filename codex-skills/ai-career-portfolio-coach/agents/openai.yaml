@@ -1,0 +1,4 @@
+interface:
+  display_name: "AI Career Portfolio Coach"
+  short_description: "Resume, JD, portfolio, and GitHub project coaching"
+  default_prompt: "Use $ai-career-portfolio-coach to improve my resume and AI application portfolio for a target JD."

@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LearningHub</title>
+    <link rel="stylesheet" href="./styles.css?v=model-picker" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <aside class="sidebar">
+        <div class="brand-block">
+          <div class="brand-mark">LH</div>
+          <div>
+            <h1>LearningHub</h1>
+          </div>
+        </div>
+
+        <div class="status-grid" aria-label="统计">
+          <div class="metric">
+            <span>文档</span>
+            <strong id="metric-documents">0</strong>
+          </div>
+          <div class="metric">
+            <span>切片</span>
+            <strong id="metric-chunks">0</strong>
+          </div>
+          <div class="metric">
+            <span>笔记</span>
+            <strong id="metric-notes">0</strong>
+          </div>
+          <div class="metric">
+            <span>回顾</span>
+            <strong id="metric-reviews">0</strong>
+          </div>
+        </div>
+
+        <div class="side-actions">
+          <button class="primary-button" id="load-samples-button">导入教程库</button>
+          <button class="ghost-button" id="load-note-samples-button">导入笔记</button>
+          <button class="ghost-button" id="clear-button">清空知识库</button>
+        </div>
+
+        <form class="upload-box" id="upload-form">
+          <label for="document-file">上传知识文档</label>
+          <input id="document-file" name="file" type="file" accept=".txt,.md,.pdf" />
+          <button class="ghost-button" type="submit">上传并索引</button>
+        </form>
+
+      </aside>
+
+      <section class="workspace">
+        <header class="topbar">
+          <div>
+            <h2>学习台</h2>
+          </div>
+          <label class="model-picker" for="chat-model">
+            回答模型
+            <select id="chat-model" disabled>
+              <option value="">加载中...</option>
+            </select>
+          </label>
+          <div class="service-state" id="service-state">连接中</div>
+        </header>
+
+        <section class="query-panel">
+          <div class="panel-header">
+            <h3>知识库问答</h3>
+            <div class="query-controls">
+              <label>
+                来源数
+                <select id="top-k">
+                  <option value="2">2</option>
+                  <option value="3" selected>3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
+              </label>
+              <label>
+                置信阈值
+                <input id="min-score" type="number" min="0" max="1" step="0.01" value="0.2" />
+              </label>
+            </div>
+          </div>
+          <form id="query-form" class="query-form">
+            <textarea id="query-input" maxlength="500">C 语言中的变量怎么理解？</textarea>
+            <button class="primary-button" type="submit">查询</button>
+          </form>
+          <div class="answer-shell">
+            <div class="answer-status" id="answer-status">待查询</div>
+            <pre id="answer-output">未查询</pre>
+          </div>
+        </section>
+
+        <section class="notebook-panel">
+          <div class="panel-header">
+            <h3>Notebook</h3>
+            <span id="active-note-label">未选择笔记</span>
+          </div>
+
+          <div class="notebook-layout">
+            <form id="note-form" class="note-editor-form">
+              <div class="form-row">
+                <input id="note-title" maxlength="120" placeholder="笔记标题" />
+              <input id="note-category" maxlength="40" placeholder="分类" />
+              </div>
+              <input id="note-tags" placeholder="标签" />
+              <textarea id="note-content" maxlength="8000" placeholder="内容"></textarea>
+              <div class="toolbar">
+                <button class="primary-button" type="submit">保存笔记</button>
+                <button class="ghost-button" type="button" id="new-note-button">新建</button>
+                <button class="ghost-button" type="button" id="related-button">查关联来源</button>
+                <select id="assist-mode">
+                  <option value="summary">摘要</option>
+                  <option value="continue">续写</option>
+                  <option value="action_items">待办</option>
+                  <option value="tags">标签建议</option>
+                </select>
+                <button class="ghost-button" type="button" id="assist-button">写作辅助</button>
+              </div>
+              <div class="assist-shell">
+                <div class="answer-status">写作辅助输出</div>
+                <pre id="assist-output">暂无内容</pre>
+              </div>
+            </form>
+
+            <div class="note-side">
+              <div class="mini-panel">
+                <div class="panel-header">
+                  <h3>笔记列表</h3>
+                  <span id="note-count">0 条</span>
+                </div>
+                <div id="note-list" class="note-list"></div>
+              </div>
+              <div class="mini-panel">
+                <div class="panel-header">
+                  <h3>今日回顾</h3>
+                  <span id="review-count">0 条</span>
+                </div>
+                <div id="review-list" class="note-list"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="split-layout">
+          <div class="documents-panel">
+            <div class="panel-header">
+              <h3>知识库</h3>
+              <span id="document-count">0 份文档</span>
+            </div>
+            <div class="document-list" id="document-list"></div>
+          </div>
+
+          <div class="sources-panel">
+            <div class="panel-header">
+              <h3>来源片段</h3>
+              <span id="source-count">0 条来源</span>
+            </div>
+            <div class="source-list" id="source-list"></div>
+          </div>
+        </section>
+
+        <section class="chunks-panel" id="chunks-panel" hidden>
+          <div class="panel-header">
+            <h3 id="chunks-title">文档切片</h3>
+            <button class="ghost-button compact" id="close-chunks-button">关闭</button>
+          </div>
+          <div id="chunks-list" class="chunks-list"></div>
+        </section>
+      </section>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="./app.js?v=model-picker"></script>
+  </body>
+</html>

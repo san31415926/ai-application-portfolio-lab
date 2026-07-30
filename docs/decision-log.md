@@ -11,6 +11,15 @@
 - 当前状态：只完成选题、边界和计划记录，尚未实现代码、测试或效果指标。
 - 面试定位：只能表述为“参考开源数据分析 Agent 方案，计划改造为本地中文结构化数据分析工作台”；完成并验证前，不宣称已经实现或达到任何准确率。
 
+## 2026-07-30：完成 DataPilot 阶段 2 项目骨架与依赖验证
+
+- 新增项目级配置、独立 `requirements.txt`、项目级 `.gitignore`、最小 Streamlit 启动页、`src` 包和测试入口。
+- 使用 Python `3.12.10` 创建 `projects/03-data-analysis-agent/.venv`，安装并验证 Streamlit `1.60.0`、Pandas `2.3.3`、DuckDB `1.5.5`、Plotly `5.24.1`、Kaleido `0.2.1`、Pydantic `2.13.4`、HTTPX `0.28.1` 和 Agno `1.8.4`。
+- 验证结果：配置测试 3 项通过，`compileall` 通过，Streamlit 启动后 `/_stcore/health` 返回 `200 ok`；阶段 2 的安装、导入和最小启动验收通过。
+- 依赖取舍：由于 Plotly `5.24.1` 与 Kaleido `1.3.0` 不兼容，已将 Kaleido 约束为 `0.2.x`；但当前 Windows 中文路径环境下 PNG 导出仍出现 Kaleido 启动错误，暂不宣称 PNG 导出已完成，留到阶段 11 处理。
+- 当前边界：页面只显示上传文件元信息，不读取 CSV/XLSX，不调用 Ollama，不生成分析结论。
+- 下一步：阶段 3 构造固定随机种子的中文电商 CSV/XLSX 样例数据。
+
 ## 2026-07-27：将旗舰项目调整为轻量版 RAG Notebook
 
 - 用户偏好 `RMA-MUN/RAGNotebook` 的产品形态，希望把它发展为适合写入简历的项目。

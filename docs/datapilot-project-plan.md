@@ -407,19 +407,27 @@ git diff --stat
 - [x] 选择并分析上游参考项目。
 - [x] 确定与 LearningHub 的差异化边界。
 - [x] 写入本严格计划。
-- [ ] 创建项目骨架和独立依赖。
+- [x] 创建项目骨架和独立依赖。
 - [ ] 构造中文电商样例数据。
 - [ ] 实现数据读取和质量检查。
 - [ ] 实现 SQL 安全和受控工具。
 - [ ] 接入本地模型和结构化 Agent。
 - [ ] 完成界面、测试、评估和简历材料。
 
-## 8. 需要用户确认的外部动作
+阶段 2 验收记录：独立虚拟环境和依赖安装成功；`unittest` 通过 3 项；`compileall` 通过；Streamlit `/_stcore/health` 返回 `200 ok`。Plotly/Kaleido 的 PNG 导出问题已记录到 `docs/decision-log.md`，留待阶段 11 处理。
 
-用户创建 GitHub 空仓库：
+## 8. GitHub 状态
+
+独立 GitHub 仓库已经创建并完成阶段 2 README 和骨架文件的首次推送：
 
 ```text
-https://github.com/<你的用户名>/datapilot-ai-data-analysis-agent
+https://github.com/san31415926/datapilot-ai-data-analysis-agent
 ```
 
-仓库创建后再提供仓库地址。届时先检查空仓库状态，再决定是将 `projects/03-data-analysis-agent` 独立推送，还是保留在现有作品集总仓库中并建立项目链接。未收到地址前，不修改现有 `origin`，不执行推送。
+阶段 2 的计划、决策记录和连续性文档也已同步到作品集总仓库：
+
+```text
+https://github.com/san31415926/ai-application-portfolio-lab
+```
+
+后续每完成一个清晰阶段，再将 `projects/03-data-analysis-agent` 目录同步到独立仓库，并将记录文档同步到总仓库。两个远程名称分别为 `datapilot` 和 `origin`，不要互相替换。

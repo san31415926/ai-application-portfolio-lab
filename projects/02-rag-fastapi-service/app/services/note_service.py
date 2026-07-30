@@ -1,12 +1,17 @@
 from __future__ import annotations
 
+import json
 import re
+import sqlite3
 import uuid
 from collections import Counter
+from contextlib import contextmanager
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
+from collections.abc import Iterator
 
-from app.core.config import SAMPLE_DIR
+from app.core.config import NOTE_DB_PATH, SAMPLE_DIR
 from app.schemas import NoteCreate, NoteInfo, NoteUpdate, SourceChunk, WritingAssistResponse
 from app.services.rag_service import rag_service
 from app.services.retriever import tokenize
@@ -82,13 +87,132 @@ def sample_note_payload(path) -> NoteCreate:
 
 
 class NoteService:
-    def __init__(self) -> None:
+    def __init__(self, db_path: str | Path = NOTE_DB_PATH) -> None:
+        self.db_path = Path(db_path)
+        self.db_path.parent.mkdir(parents=True, exist_ok=True)
         self.notes: dict[str, NoteRecord] = {}
-        self._samples_loaded = False
+        self._initialize_storage()
+        self._load_from_storage()
+        self._samples_loaded = self._get_metadata("samples_loaded") == "1"
+
+    @contextmanager
+    def _connection(self) -> Iterator[sqlite3.Connection]:
+        connection = sqlite3.connect(self.db_path)
+        connection.row_factory = sqlite3.Row
+        try:
+            yield connection
+            connection.commit()
+        except Exception:
+            connection.rollback()
+            raise
+        finally:
+            connection.close()
+
+    def _initialize_storage(self) -> None:
+        with self._connection() as connection:
+            connection.execute(
+                """
+                CREATE TABLE IF NOT EXISTS notes (
+                    note_id TEXT PRIMARY KEY,
+                    title TEXT NOT NULL,
+                    content TEXT NOT NULL,
+                    tags_json TEXT NOT NULL,
+                    category TEXT NOT NULL,
+                    created_at TEXT NOT NULL,
+                    updated_at TEXT NOT NULL,
+                    review_count INTEGER NOT NULL DEFAULT 0,
+                    next_review_at TEXT NOT NULL
+                )
+                """
+            )
+            connection.execute(
+                """
+                CREATE TABLE IF NOT EXISTS note_metadata (
+                    key TEXT PRIMARY KEY,
+                    value TEXT NOT NULL
+                )
+                """
+            )
+
+    def _load_from_storage(self) -> None:
+        with self._connection() as connection:
+            rows = connection.execute(
+                "SELECT * FROM notes ORDER BY updated_at DESC"
+            ).fetchall()
+        self.notes = {row["note_id"]: self._from_row(row) for row in rows}
+
+    @staticmethod
+    def _from_row(row: sqlite3.Row) -> NoteRecord:
+        return NoteRecord(
+            note_id=row["note_id"],
+            title=row["title"],
+            content=row["content"],
+            tags=json.loads(row["tags_json"]),
+            category=row["category"],
+            created_at=datetime.fromisoformat(row["created_at"]),
+            updated_at=datetime.fromisoformat(row["updated_at"]),
+            review_count=row["review_count"],
+            next_review_at=datetime.fromisoformat(row["next_review_at"]),
+        )
+
+    @staticmethod
+    def _note_values(note: NoteRecord) -> tuple[object, ...]:
+        return (
+            note.note_id,
+            note.title,
+            note.content,
+            json.dumps(note.tags, ensure_ascii=False),
+            note.category,
+            note.created_at.isoformat(),
+            note.updated_at.isoformat(),
+            note.review_count,
+            note.next_review_at.isoformat(),
+        )
+
+    def _save_note(self, note: NoteRecord) -> None:
+        with self._connection() as connection:
+            connection.execute(
+                """
+                INSERT INTO notes (
+                    note_id, title, content, tags_json, category,
+                    created_at, updated_at, review_count, next_review_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ON CONFLICT(note_id) DO UPDATE SET
+                    title = excluded.title,
+                    content = excluded.content,
+                    tags_json = excluded.tags_json,
+                    category = excluded.category,
+                    created_at = excluded.created_at,
+                    updated_at = excluded.updated_at,
+                    review_count = excluded.review_count,
+                    next_review_at = excluded.next_review_at
+                """,
+                self._note_values(note),
+            )
+
+    def _get_metadata(self, key: str) -> str | None:
+        with self._connection() as connection:
+            row = connection.execute(
+                "SELECT value FROM note_metadata WHERE key = ?", (key,)
+            ).fetchone()
+        return row["value"] if row else None
+
+    def _set_metadata(self, key: str, value: str) -> None:
+        with self._connection() as connection:
+            connection.execute(
+                """
+                INSERT INTO note_metadata (key, value) VALUES (?, ?)
+                ON CONFLICT(key) DO UPDATE SET value = excluded.value
+                """,
+                (key, value),
+            )
 
     def clear(self) -> None:
         self.notes.clear()
         self._samples_loaded = False
+        with self._connection() as connection:
+            connection.execute("DELETE FROM notes")
+            connection.execute("DELETE FROM note_metadata")
 
     def create(self, payload: NoteCreate) -> NoteInfo:
         now = utc_now()
@@ -103,6 +227,7 @@ class NoteService:
             next_review_at=now + timedelta(days=1),
         )
         self.notes[note.note_id] = note
+        self._save_note(note)
         return self._to_info(note)
 
     def load_samples(self) -> list[NoteInfo]:
@@ -162,7 +287,9 @@ class NoteService:
         created = [self.create(sample) for sample in samples]
         for note_info in created[:2]:
             self.notes[note_info.note_id].next_review_at = utc_now() - timedelta(minutes=1)
+            self._save_note(self.notes[note_info.note_id])
         self._samples_loaded = True
+        self._set_metadata("samples_loaded", "1")
         return [self._to_info(self.notes[note.note_id]) for note in created]
 
     def list_notes(self) -> list[NoteInfo]:
@@ -188,12 +315,15 @@ class NoteService:
         if payload.category is not None:
             note.category = (payload.category or "未分类").strip()[:40]
         note.updated_at = utc_now()
+        self._save_note(note)
         return self._to_info(note)
 
     def delete(self, note_id: str) -> bool:
         if note_id not in self.notes:
             return False
         del self.notes[note_id]
+        with self._connection() as connection:
+            connection.execute("DELETE FROM notes WHERE note_id = ?", (note_id,))
         return True
 
     def search(self, query: str, top_k: int = 5) -> list[NoteInfo]:
@@ -287,14 +417,16 @@ class NoteService:
         note.review_count += 1
         note.next_review_at = utc_now() + timedelta(days=interval)
         note.updated_at = utc_now()
+        self._save_note(note)
         return self._to_info(note)
 
-    def stats(self) -> dict[str, int]:
+    def stats(self) -> dict[str, int | str]:
         return {
             "note_count": len(self.notes),
             "tag_count": len({tag for note in self.notes.values() for tag in note.tags}),
             "review_due_count": len(self.due_reviews()),
             "character_count": sum(len(note.content) for note in self.notes.values()),
+            "storage_backend": "sqlite",
         }
 
     def _summary(self, note: NoteRecord, sources: list[SourceChunk]) -> str:

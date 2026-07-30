@@ -1,18 +1,24 @@
 import json
 import os
+import tempfile
 import unittest
+from pathlib import Path
 from unittest.mock import patch
 
+os.environ.setdefault(
+    "NOTE_DB_PATH",
+    str(Path(tempfile.gettempdir()) / "learninghub-rag-tests.sqlite"),
+)
 os.environ.setdefault("RAG_EMBEDDING_BACKEND", "sparse")
 os.environ.setdefault("RAG_MIN_SCORE", "0.045")
 os.environ.setdefault("RAG_GENERATION_BACKEND", "extractive")
 
 from fastapi.testclient import TestClient
 
-from app.schemas import SourceChunk
+from app.schemas import NoteCreate, NoteUpdate, SourceChunk
 from app.main import app
 from app.services.answer_generator import OllamaAnswerGenerator
-from app.services.note_service import note_service
+from app.services.note_service import NoteService, note_service
 from app.services.rag_service import rag_service
 
 
@@ -159,6 +165,36 @@ class RagFastApiServiceTest(unittest.TestCase):
         search_response = self.client.post("/api/v1/notes/search", json={"query": "C语言变量", "top_k": 3})
         self.assertEqual(search_response.status_code, 200)
         self.assertEqual(search_response.json()["data"][0]["note_id"], note_id)
+
+    def test_note_persists_after_service_restart(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            db_path = Path(directory) / "notes.sqlite"
+            first_service = NoteService(db_path=db_path)
+            created = first_service.create(
+                NoteCreate(
+                    title="SQLite 持久化笔记",
+                    content="服务重启后仍然可以恢复这条笔记。",
+                    tags=["SQLite", "FastAPI"],
+                    category="项目实践",
+                )
+            )
+            first_service.update(
+                created.note_id,
+                NoteUpdate(
+                    content="页面编辑后的内容会写入 SQLite。",
+                    tags=["SQLite", "持久化"],
+                ),
+            )
+            first_service.complete_review(created.note_id)
+
+            restarted_service = NoteService(db_path=db_path)
+            restored = restarted_service.get(created.note_id)
+
+            self.assertIsNotNone(restored)
+            self.assertEqual(restored.title, "SQLite 持久化笔记")
+            self.assertEqual(restored.content, "页面编辑后的内容会写入 SQLite。")
+            self.assertEqual(restored.tags, ["SQLite", "持久化"])
+            self.assertEqual(restored.review_count, 1)
 
     def test_writing_assist_uses_local_chat_generator(self) -> None:
         note_response = self.client.post(

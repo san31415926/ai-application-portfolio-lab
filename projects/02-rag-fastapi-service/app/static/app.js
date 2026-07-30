@@ -517,7 +517,7 @@ async function saveNote(event) {
 
   selectNote(response.data);
   await refreshAll();
-  showToast("笔记已保存");
+  showToast("笔记已保存到后台");
 }
 
 async function deleteNote(noteId) {

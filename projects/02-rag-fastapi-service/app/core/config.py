@@ -23,6 +23,10 @@ RAG_LOCAL_CHAT_MODEL = os.getenv("RAG_LOCAL_CHAT_MODEL", "qwen2.5:3b").strip()
 OLLAMA_GENERATE_TIMEOUT = float(os.getenv("OLLAMA_GENERATE_TIMEOUT", "120"))
 RAG_MAX_CONTEXT_CHARS = int(os.getenv("RAG_MAX_CONTEXT_CHARS", "6000"))
 RAG_MAX_GENERATION_TOKENS = int(os.getenv("RAG_MAX_GENERATION_TOKENS", "2048"))
+NOTE_DB_PATH = os.getenv(
+    "NOTE_DB_PATH",
+    str(PROJECT_DIR.parents[1] / "data" / "processed" / "learninghub_notes.sqlite"),
+)
 
 DEFAULT_MIN_SCORE = float(
     os.getenv(

@@ -37,6 +37,7 @@ projects/02-rag-fastapi-service/
 - `GET /api/v1/notes`：查看笔记列表
 - `PATCH /api/v1/notes/{note_id}`：保存页面编辑后的笔记
 - `DELETE /api/v1/notes/{note_id}`：删除笔记
+- 编辑已有笔记时，页面停止输入后会通过防抖 `PATCH` 自动同步
 - `GET /api/v1/notes/{note_id}/related`：按笔记内容检索相关来源
 - `POST /api/v1/notes/{note_id}/assist`：生成摘要、续写、待办或标签建议
 - `GET /api/v1/reviews/due`：查看待回顾笔记
@@ -140,7 +141,7 @@ python -m unittest discover -s tests
 - 参考 RAGNotebook 产品形态，基于 FastAPI 实现 LearningHub 中文学习知识库，接入 Ollama 本地 `embeddinggemma:300m` 和 `qwen2.5:3b`，完成语义检索、来源约束回答和低相关度拒答。
 - 增加本地模型发现与按请求选择机制，页面可在 `qwen2.5:3b`、`qwen3:4b` 等已安装生成模型之间切换，embedding 模型不参与回答模型选择。
 - 设计 RAG + Notebook 服务分层结构，将路由层、文档解析、文本切分、检索器、问答服务、笔记服务和静态中文工作台解耦，并通过 OpenAPI 文档暴露可测试接口。
-- 使用 SQLite 持久化笔记正文、标签、分类和复习状态，页面编辑通过 FastAPI `PATCH` 接口同步到后台，并验证服务重启后的数据恢复。
+- 使用 SQLite 持久化笔记正文、标签、分类和复习状态，页面编辑通过 FastAPI `PATCH` 接口同步到后台，并使用 900ms 防抖自动保存和重启恢复测试验证数据可靠性。
 - 自建 LearningHub 学习教程库样例，包含 227 份 Markdown 教程文档和 205 条可复习学习笔记，覆盖生活百科、做菜、C 语言、Python、FastAPI、前端、数据分析、SQL、Git、RAG 与本地 AI 等主题，用于演示中文教程检索、学习笔记和来源追踪。
 - 实现低置信度拒答、生成失败降级、批量向量索引和笔记关联知识库机制，通过测试覆盖示例入库、文档上传、查询命中、无证据拒答和笔记关联场景。
 

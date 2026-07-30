@@ -2,6 +2,8 @@ let activeNoteId = null;
 let answerSources = [];
 let answerText = "";
 let thinkingText = "";
+let autoSaveTimer = null;
+let autoSaveVersion = 0;
 
 const elements = {
   state: document.querySelector("#service-state"),
@@ -82,6 +84,55 @@ function parseTags(value) {
     .split(/[,，、\s]+/)
     .map((tag) => tag.trim().replace(/^#/, ""))
     .filter(Boolean);
+}
+
+function currentNotePayload() {
+  return {
+    title: elements.noteTitle.value.trim(),
+    content: elements.noteContent.value.trim(),
+    category: elements.noteCategory.value.trim() || "未分类",
+    tags: parseTags(elements.noteTags.value),
+  };
+}
+
+function cancelAutoSave() {
+  autoSaveVersion += 1;
+  window.clearTimeout(autoSaveTimer);
+  autoSaveTimer = null;
+}
+
+function scheduleAutoSave() {
+  if (!activeNoteId) return;
+  window.clearTimeout(autoSaveTimer);
+  const version = ++autoSaveVersion;
+  elements.activeNoteLabel.textContent = "等待同步到后台...";
+  autoSaveTimer = window.setTimeout(() => autoSaveNote(version), 900);
+}
+
+async function autoSaveNote(version) {
+  if (version !== autoSaveVersion || !activeNoteId) return;
+  const noteId = activeNoteId;
+  const payload = currentNotePayload();
+  if (!payload.title || !payload.content) {
+    elements.activeNoteLabel.textContent = "填写标题和内容后自动同步";
+    return;
+  }
+  elements.activeNoteLabel.textContent = "正在同步到后台...";
+  try {
+    const response = await api(`/api/v1/notes/${noteId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json; charset=utf-8" },
+      body: JSON.stringify(payload),
+    });
+    if (version !== autoSaveVersion || activeNoteId !== noteId) return;
+    elements.activeNoteLabel.textContent = `已同步到后台：${response.data.title}`;
+    await refreshNotes();
+  } catch (error) {
+    if (version === autoSaveVersion && activeNoteId === noteId) {
+      elements.activeNoteLabel.textContent = "同步失败，请点击保存重试";
+      showToast(`自动保存失败：${error.message}`);
+    }
+  }
 }
 
 async function refreshStats() {
@@ -471,6 +522,7 @@ async function queryKnowledge(event) {
 }
 
 function selectNote(note) {
+  cancelAutoSave();
   activeNoteId = note.note_id;
   elements.activeNoteLabel.textContent = `正在编辑：${note.title}`;
   elements.noteTitle.value = note.title;
@@ -481,6 +533,7 @@ function selectNote(note) {
 }
 
 function newNote() {
+  cancelAutoSave();
   activeNoteId = null;
   elements.activeNoteLabel.textContent = "新建笔记";
   elements.noteTitle.value = "";
@@ -492,12 +545,8 @@ function newNote() {
 
 async function saveNote(event) {
   event.preventDefault();
-  const payload = {
-    title: elements.noteTitle.value.trim(),
-    content: elements.noteContent.value.trim(),
-    category: elements.noteCategory.value.trim() || "未分类",
-    tags: parseTags(elements.noteTags.value),
-  };
+  cancelAutoSave();
+  const payload = currentNotePayload();
   if (!payload.title || !payload.content) {
     showToast("标题和内容不能为空");
     return;
@@ -641,6 +690,9 @@ document.querySelector("#query-form").addEventListener("submit", (event) => {
 });
 document.querySelector("#note-form").addEventListener("submit", (event) => {
   saveNote(event).catch((error) => showToast(error.message));
+});
+[elements.noteTitle, elements.noteCategory, elements.noteTags, elements.noteContent].forEach((field) => {
+  field.addEventListener("input", scheduleAutoSave);
 });
 document.querySelector("#new-note-button").addEventListener("click", newNote);
 document.querySelector("#related-button").addEventListener("click", () => {

@@ -408,13 +408,15 @@ git diff --stat
 - [x] 确定与 LearningHub 的差异化边界。
 - [x] 写入本严格计划。
 - [x] 创建项目骨架和独立依赖。
-- [ ] 构造中文电商样例数据。
+- [x] 构造中文电商样例数据。
 - [ ] 实现数据读取和质量检查。
 - [ ] 实现 SQL 安全和受控工具。
 - [ ] 接入本地模型和结构化 Agent。
 - [ ] 完成界面、测试、评估和简历材料。
 
 阶段 2 验收记录：独立虚拟环境和依赖安装成功；`unittest` 通过 3 项；`compileall` 通过；Streamlit `/_stcore/health` 返回 `200 ok`。Plotly/Kaleido 的 PNG 导出问题已记录到 `docs/decision-log.md`，留待阶段 11 处理。
+
+阶段 3 验收记录：生成 `data/sample_ecommerce.csv` 和 `data/sample_ecommerce.xlsx`；固定种子测试通过；CSV/XLSX 行数、字段和关键数值一致；样例数据测试 3 项通过；字段说明和缺失值、重复行、异常金额场景已写入 `data/README.md`。
 
 ## 8. GitHub 状态
 

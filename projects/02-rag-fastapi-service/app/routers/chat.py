@@ -17,6 +17,7 @@ def query_knowledge_base(request: QueryRequest) -> QueryResponse:
             request.query,
             top_k=request.top_k,
             min_score=request.min_score,
+            show_thinking=request.show_thinking,
             chat_model=request.chat_model,
         )
     except ValueError as exc:
@@ -30,6 +31,7 @@ def stream_query_knowledge_base(request: QueryRequest) -> StreamingResponse:
             request.query,
             top_k=request.top_k,
             min_score=request.min_score,
+            show_thinking=request.show_thinking,
             chat_model=request.chat_model,
         )
     except ValueError as exc:

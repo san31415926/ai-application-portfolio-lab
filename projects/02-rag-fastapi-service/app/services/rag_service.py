@@ -78,6 +78,7 @@ class RagService:
         query: str,
         top_k: int = DEFAULT_TOP_K,
         min_score: float = DEFAULT_MIN_SCORE,
+        show_thinking: bool = False,
         chat_model: str | None = None,
     ) -> QueryResponse:
         sources = self.retriever.search(query, top_k=top_k)
@@ -96,7 +97,7 @@ class RagService:
         generator = self._select_generator(chat_model)
         if generator is not None:
             try:
-                answer = generator.generate(query, sources)
+                answer = generator.generate(query, sources, show_thinking=show_thinking)
                 answer_backend = generator.name
                 answer_model = generator.model_name
             except RuntimeError:
@@ -118,6 +119,7 @@ class RagService:
         query: str,
         top_k: int = DEFAULT_TOP_K,
         min_score: float = DEFAULT_MIN_SCORE,
+        show_thinking: bool = False,
         chat_model: str | None = None,
     ) -> Iterator[dict[str, object]]:
         sources = self.retriever.search(query, top_k=top_k)
@@ -141,7 +143,7 @@ class RagService:
                     {"type": "done", "refused": True, "answer_backend": "extractive", "answer_model": None},
                 )
             )
-        return self._stream_answer(query, sources, generator)
+        return self._stream_answer(query, sources, generator, show_thinking=show_thinking)
 
     def _select_generator(self, chat_model: str | None):
         generator = self.answer_generator
@@ -157,6 +159,7 @@ class RagService:
         query: str,
         sources: list[SourceChunk],
         generator,
+        show_thinking: bool = False,
     ) -> Iterator[dict[str, object]]:
         answer_backend = generator.name if generator else "extractive"
         answer_model = generator.model_name if generator else None
@@ -172,11 +175,31 @@ class RagService:
 
         if generator is not None:
             generate_stream = getattr(generator, "generate_stream", None)
-            if generate_stream is not None:
+            generate_stream_events = getattr(generator, "generate_stream_events", None)
+            if generate_stream_events is not None or generate_stream is not None:
                 try:
                     emitted = False
                     full_answer = ""
-                    for chunk in generate_stream(query, sources):
+                    if generate_stream_events is not None:
+                        generated = generate_stream_events(
+                            query,
+                            sources,
+                            show_thinking=show_thinking,
+                        )
+                    else:
+                        generated = (
+                            {"type": "answer", "text": chunk}
+                            for chunk in generate_stream(query, sources)
+                        )
+                    for generated_chunk in generated:
+                        if generated_chunk.get("type") == "thinking":
+                            yield {"type": "thinking", "text": generated_chunk.get("text", "")}
+                            continue
+                        if generated_chunk.get("type") != "answer":
+                            continue
+                        chunk = str(generated_chunk.get("text", ""))
+                        if not chunk:
+                            continue
                         emitted = True
                         full_answer += chunk
                         yield {"type": "delta", "text": chunk}
@@ -230,8 +253,8 @@ class RagService:
         if not selected_sentences:
             selected_sentences = [source.content[:180].strip() for source in sources[:2]]
 
-        source_refs = "；".join(
-            f"{source.filename} 第 {source.chunk_index} 段" for source in sources[:3]
+        source_refs = " ".join(
+            f"[来源{index}]" for index, _ in enumerate(sources[:3], start=1)
         )
         return " ".join(selected_sentences) + f"\n\n来源：{source_refs}"
 

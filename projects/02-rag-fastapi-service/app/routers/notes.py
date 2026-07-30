@@ -70,7 +70,7 @@ def related_sources(note_id: str, top_k: int = Query(default=4, ge=1, le=10)) ->
 
 @router.post("/notes/{note_id}/assist", response_model=ApiResponse)
 def assist_writing(note_id: str, payload: WritingAssistRequest) -> ApiResponse:
-    result = note_service.assist(note_id, payload.mode)
+    result = note_service.assist(note_id, payload.mode, chat_model=payload.chat_model)
     if result is None:
         raise HTTPException(status_code=404, detail="笔记不存在")
     return ApiResponse(data=result.model_dump())

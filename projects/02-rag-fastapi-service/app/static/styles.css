@@ -285,6 +285,18 @@ a {
   font-size: 13px;
 }
 
+.thinking-toggle {
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.query-controls .thinking-toggle input {
+  width: 16px;
+  min-height: 16px;
+  padding: 0;
+  accent-color: var(--blue);
+}
+
 .query-controls select,
 .query-controls input {
   width: 76px;
@@ -361,6 +373,18 @@ a {
 .toolbar select {
   width: 116px;
   min-height: 40px;
+}
+
+.assist-model-picker {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.assist-model-picker select {
+  width: 176px;
 }
 
 .assist-shell {
@@ -441,6 +465,49 @@ a {
   line-height: 1.7;
   font-family: inherit;
   font-size: 14px;
+}
+
+.answer-source-link {
+  min-height: 0;
+  border: 0;
+  border-radius: 4px;
+  background: var(--blue-soft);
+  color: var(--blue);
+  padding: 1px 4px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.answer-source-link:hover,
+.answer-source-link:focus-visible {
+  background: #dbeafe;
+  text-decoration: underline;
+}
+
+.thinking-shell {
+  margin-top: 12px;
+  border: 1px solid #ead9b0;
+  border-left: 4px solid var(--amber);
+  border-radius: 8px;
+  background: #fffdf7;
+  overflow: hidden;
+}
+
+.thinking-status {
+  background: var(--amber-soft);
+  color: var(--amber);
+}
+
+#thinking-output {
+  max-height: 360px;
+  overflow: auto;
+  margin: 0;
+  padding: 14px;
+  white-space: pre-wrap;
+  line-height: 1.65;
+  font-family: inherit;
+  font-size: 13px;
+  color: #5d4b25;
 }
 
 .split-layout {
@@ -617,6 +684,16 @@ a {
   }
 
   .model-picker select {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .assist-model-picker {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .assist-model-picker select {
     min-width: 0;
     flex: 1;
   }

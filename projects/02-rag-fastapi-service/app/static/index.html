@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>LearningHub</title>
-    <link rel="stylesheet" href="./styles.css?v=notebook-scroll" />
+    <link rel="stylesheet" href="./styles.css?v=thinking-sources-models" />
   </head>
   <body>
     <main class="app-shell">
@@ -80,6 +80,10 @@
                 置信阈值
                 <input id="min-score" type="number" min="0" max="1" step="0.01" value="0.2" />
               </label>
+              <label class="thinking-toggle" for="show-thinking">
+                <input id="show-thinking" type="checkbox" />
+                显示思考过程
+              </label>
             </div>
           </div>
           <form id="query-form" class="query-form">
@@ -89,6 +93,10 @@
           <div class="answer-shell">
             <div class="answer-status" id="answer-status">待查询</div>
             <pre id="answer-output">未查询</pre>
+          </div>
+          <div class="thinking-shell" id="thinking-shell" hidden>
+            <div class="answer-status thinking-status">模型思考过程</div>
+            <pre id="thinking-output"></pre>
           </div>
           <div class="sources-panel" id="sources-panel">
             <div class="panel-header">
@@ -123,6 +131,12 @@
                   <option value="action_items">待办</option>
                   <option value="tags">标签建议</option>
                 </select>
+                <label class="assist-model-picker" for="assist-model">
+                  辅助模型
+                  <select id="assist-model" disabled>
+                    <option value="">加载中...</option>
+                  </select>
+                </label>
                 <button class="ghost-button" type="button" id="assist-button">写作辅助</button>
               </div>
               <div class="assist-shell">
@@ -171,6 +185,6 @@
     </main>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
-    <script src="./app.js?v=sources-near-answer"></script>
+    <script src="./app.js?v=thinking-sources-models"></script>
   </body>
 </html>

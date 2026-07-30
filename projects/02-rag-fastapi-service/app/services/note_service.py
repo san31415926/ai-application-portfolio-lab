@@ -219,14 +219,18 @@ class NoteService:
         query = f"{note.title}\n{' '.join(note.tags)}\n{note.content[:1200]}"
         return rag_service.retriever.search(query, top_k=top_k)
 
-    def assist(self, note_id: str, mode: str) -> WritingAssistResponse | None:
+    def assist(
+        self,
+        note_id: str,
+        mode: str,
+        chat_model: str | None = None,
+    ) -> WritingAssistResponse | None:
         note = self.notes.get(note_id)
         if note is None:
             return None
         sources = self.related_sources(note_id, top_k=3) or []
-        model_result = self._assist_with_model(note, mode, sources)
+        model_result, answer_model = self._assist_with_model(note, mode, sources, chat_model)
         answer_backend = "ollama" if model_result else "extractive"
-        answer_model = getattr(rag_service.answer_generator, "model_name", None) if model_result else None
         result = model_result
         if result is None:
             result = self._fallback_assist(note, mode, sources)
@@ -243,15 +247,19 @@ class NoteService:
         note: NoteRecord,
         mode: str,
         sources: list[SourceChunk],
-    ) -> str | None:
-        generator = rag_service.answer_generator
+        chat_model: str | None = None,
+    ) -> tuple[str | None, str | None]:
+        try:
+            generator = rag_service._select_generator(chat_model)
+        except ValueError:
+            return None, None
         generate = getattr(generator, "generate_writing_assist", None) if generator else None
         if generate is None:
-            return None
+            return None, None
         try:
-            return generate(mode, note.title, note.content, sources)
-        except RuntimeError:
-            return None
+            return generate(mode, note.title, note.content, sources), generator.model_name
+        except (RuntimeError, AttributeError):
+            return None, None
 
     def _fallback_assist(self, note: NoteRecord, mode: str, sources: list[SourceChunk]) -> str:
         if mode == "summary":

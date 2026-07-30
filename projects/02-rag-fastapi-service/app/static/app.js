@@ -1,8 +1,12 @@
 let activeNoteId = null;
+let answerSources = [];
+let answerText = "";
+let thinkingText = "";
 
 const elements = {
   state: document.querySelector("#service-state"),
   chatModel: document.querySelector("#chat-model"),
+  assistModel: document.querySelector("#assist-model"),
   metricDocuments: document.querySelector("#metric-documents"),
   metricChunks: document.querySelector("#metric-chunks"),
   metricNotes: document.querySelector("#metric-notes"),
@@ -21,6 +25,9 @@ const elements = {
   chunksList: document.querySelector("#chunks-list"),
   answerStatus: document.querySelector("#answer-status"),
   answerOutput: document.querySelector("#answer-output"),
+  thinkingShell: document.querySelector("#thinking-shell"),
+  thinkingOutput: document.querySelector("#thinking-output"),
+  showThinking: document.querySelector("#show-thinking"),
   assistStatus: document.querySelector("#assist-status"),
   assistOutput: document.querySelector("#assist-output"),
   queryInput: document.querySelector("#query-input"),
@@ -95,24 +102,31 @@ async function refreshModels() {
     const payload = await api("/api/v1/models");
     const modelData = payload.data || {};
     const models = modelData.models || [];
-    elements.chatModel.replaceChildren();
+    const modelSelects = [elements.chatModel, elements.assistModel].filter(Boolean);
     if (!models.length) {
-      elements.chatModel.append(new Option("暂无本地模型", ""));
-      elements.chatModel.disabled = true;
+      modelSelects.forEach((select) => {
+        select.replaceChildren(new Option("暂无本地模型", ""));
+        select.disabled = true;
+      });
       return;
     }
-    models.forEach((model) => {
-      const label = model.parameter_size ? `${model.name} · ${model.parameter_size}` : model.name;
-      elements.chatModel.append(new Option(label, model.name));
-    });
     const defaultModel = modelData.default_model;
-    elements.chatModel.value = models.some((model) => model.name === defaultModel)
-      ? defaultModel
-      : models[0].name;
-    elements.chatModel.disabled = false;
+    modelSelects.forEach((select) => {
+      select.replaceChildren();
+      models.forEach((model) => {
+        const label = model.parameter_size ? `${model.name} · ${model.parameter_size}` : model.name;
+        select.append(new Option(label, model.name));
+      });
+      select.value = models.some((model) => model.name === defaultModel)
+        ? defaultModel
+        : models[0].name;
+      select.disabled = false;
+    });
   } catch (error) {
-    elements.chatModel.replaceChildren(new Option("模型服务不可用", ""));
-    elements.chatModel.disabled = true;
+    [elements.chatModel, elements.assistModel].filter(Boolean).forEach((select) => {
+      select.replaceChildren(new Option("模型服务不可用", ""));
+      select.disabled = true;
+    });
   }
 }
 
@@ -192,6 +206,42 @@ function renderSources(sources) {
     card.append(header, content);
     elements.sourceList.append(card);
   });
+}
+
+function renderAnswerText(text) {
+  elements.answerOutput.replaceChildren();
+  const citationPattern = /\[?\s*来源\s*(\d+)\s*\]?/g;
+  let cursor = 0;
+  let match;
+  while ((match = citationPattern.exec(text)) !== null) {
+    if (match.index > cursor) {
+      elements.answerOutput.append(window.document.createTextNode(text.slice(cursor, match.index)));
+    }
+    const source = answerSources[Number(match[1]) - 1];
+    if (!source) {
+      elements.answerOutput.append(window.document.createTextNode(match[0]));
+    } else {
+      const button = window.document.createElement("button");
+      button.type = "button";
+      button.className = "answer-source-link";
+      button.textContent = `[来源${match[1]}]`;
+      button.title = `打开${source.filename}第${source.chunk_index}段原文`;
+      button.setAttribute("aria-label", `打开${source.filename}第${source.chunk_index}段原文`);
+      button.addEventListener("click", () => {
+        showSourceChunk(source).catch((error) => showToast(error.message));
+      });
+      elements.answerOutput.append(button);
+    }
+    cursor = citationPattern.lastIndex;
+  }
+  if (cursor < text.length) {
+    elements.answerOutput.append(window.document.createTextNode(text.slice(cursor)));
+  }
+}
+
+function appendAnswerText(text) {
+  answerText += text;
+  renderAnswerText(answerText);
 }
 
 function renderNotes(notes) {
@@ -296,9 +346,14 @@ async function clearKnowledge() {
   await api("/api/v1/knowledge/documents", { method: "DELETE" });
   await refreshAll();
   renderSources([]);
+  answerSources = [];
   elements.answerStatus.textContent = "待查询";
   elements.answerStatus.className = "answer-status";
-  elements.answerOutput.textContent = "未查询";
+  answerText = "未查询";
+  renderAnswerText(answerText);
+  thinkingText = "";
+  elements.thinkingOutput.textContent = "";
+  elements.thinkingShell.hidden = true;
   elements.chunksPanel.hidden = true;
   showToast("知识库已清空");
 }
@@ -335,7 +390,11 @@ async function queryKnowledge(event) {
   elements.queryButton.textContent = "生成中...";
   elements.answerStatus.textContent = "检索中";
   elements.answerStatus.className = "answer-status";
-  elements.answerOutput.textContent = "";
+  answerText = "";
+  renderAnswerText(answerText);
+  thinkingText = "";
+  elements.thinkingOutput.textContent = "";
+  elements.thinkingShell.hidden = !elements.showThinking.checked;
 
   try {
     const response = await fetch("/api/v1/chat/query/stream", {
@@ -345,6 +404,7 @@ async function queryKnowledge(event) {
         query,
         top_k: Number(elements.topK.value),
         min_score: Number(elements.minScore.value),
+        show_thinking: elements.showThinking.checked,
         chat_model: elements.chatModel.value || null,
       }),
     });
@@ -360,7 +420,9 @@ async function queryKnowledge(event) {
       if (!line) return;
       const payload = JSON.parse(line.slice(6));
       if (payload.type === "meta") {
-        renderSources(payload.sources || []);
+        answerSources = payload.sources || [];
+        renderSources(answerSources);
+        elements.thinkingShell.hidden = !elements.showThinking.checked;
         elements.answerStatus.textContent = payload.refused
           ? "已拒答"
           : payload.answer_model
@@ -368,10 +430,16 @@ async function queryKnowledge(event) {
             : "正在整理答案";
         elements.answerStatus.className = payload.refused ? "answer-status refused" : "answer-status";
       } else if (payload.type === "delta") {
-        elements.answerOutput.textContent += payload.text;
+        appendAnswerText(payload.text);
         elements.answerStatus.textContent = "正在生成...";
+      } else if (payload.type === "thinking") {
+        thinkingText += payload.text;
+        elements.thinkingOutput.textContent = thinkingText;
+        elements.thinkingShell.hidden = false;
+        elements.answerStatus.textContent = "正在思考...";
       } else if (payload.type === "replace") {
-        elements.answerOutput.textContent = payload.text;
+        answerText = payload.text;
+        renderAnswerText(answerText);
       } else if (payload.type === "done") {
         const modelLabel = payload.answer_model ? ` · ${payload.answer_model}` : "";
         elements.answerStatus.textContent = payload.refused
@@ -474,12 +542,15 @@ async function assistWriting() {
   }
   elements.assistButton.disabled = true;
   elements.assistButton.textContent = "模型生成中...";
-  elements.assistStatus.textContent = "正在调用 qwen2.5:3b";
+  elements.assistStatus.textContent = `正在调用 ${elements.assistModel.value || "本地模型"}`;
   try {
     const payload = await api(`/api/v1/notes/${activeNoteId}/assist`, {
       method: "POST",
       headers: { "Content-Type": "application/json; charset=utf-8" },
-      body: JSON.stringify({ mode: elements.assistMode.value }),
+      body: JSON.stringify({
+        mode: elements.assistMode.value,
+        chat_model: elements.assistModel.value || null,
+      }),
     });
     elements.assistOutput.textContent = payload.data.result;
     elements.assistStatus.textContent = payload.data.answer_model

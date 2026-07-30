@@ -29,6 +29,7 @@ class QueryRequest(BaseModel):
     query: str = Field(..., min_length=1, max_length=500)
     top_k: int = Field(default=4, ge=1, le=10)
     min_score: float = Field(default=DEFAULT_MIN_SCORE, ge=0, le=1)
+    show_thinking: bool = False
     chat_model: str | None = Field(
         default=None,
         max_length=120,
@@ -88,6 +89,11 @@ class NoteSearchRequest(BaseModel):
 
 class WritingAssistRequest(BaseModel):
     mode: str = Field(default="summary", pattern="^(summary|continue|action_items|tags)$")
+    chat_model: str | None = Field(
+        default=None,
+        max_length=120,
+        pattern=r"^[A-Za-z0-9._:-]+$",
+    )
 
 
 class WritingAssistResponse(BaseModel):

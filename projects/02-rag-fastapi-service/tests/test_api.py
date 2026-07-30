@@ -7,6 +7,7 @@ os.environ.setdefault("RAG_GENERATION_BACKEND", "extractive")
 
 from fastapi.testclient import TestClient
 
+from app.schemas import SourceChunk
 from app.main import app
 from app.services.answer_generator import OllamaAnswerGenerator
 from app.services.note_service import note_service
@@ -247,6 +248,30 @@ class RagFastApiServiceTest(unittest.TestCase):
         events = list(rag_service._stream_answer("问题", source_models, StubGenerator()))
         self.assertEqual([source.filename for source in captured_sources], ["one.md", "two.md"])
         self.assertIn("[来源1] [来源2]", "".join(event.get("text", "") for event in events))
+
+    def test_stream_answer_can_show_or_hide_thinking(self) -> None:
+        class StubGenerator:
+            name = "ollama"
+            model_name = "test-model"
+
+            @staticmethod
+            def generate_stream_events(query, sources, show_thinking=False):
+                if show_thinking:
+                    yield {"type": "thinking", "text": "内部判断"}
+                yield {"type": "answer", "text": "最终答案 [来源1]"}
+
+        source = SourceChunk(
+            chunk_id="chunk-1",
+            document_id="doc-1",
+            filename="one.md",
+            chunk_index=1,
+            score=0.9,
+            content="资料",
+        )
+        hidden_events = list(rag_service._stream_answer("问题", [source], StubGenerator()))
+        shown_events = list(rag_service._stream_answer("问题", [source], StubGenerator(), show_thinking=True))
+        self.assertNotIn("thinking", [event["type"] for event in hidden_events])
+        self.assertIn("thinking", [event["type"] for event in shown_events])
 
 
 if __name__ == "__main__":

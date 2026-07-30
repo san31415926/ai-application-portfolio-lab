@@ -183,14 +183,14 @@ function renderSources(sources) {
     return;
   }
 
-  sources.forEach((source) => {
+  sources.forEach((source, index) => {
     const card = window.document.createElement("article");
     card.className = "source-card";
 
     const header = window.document.createElement("header");
     const title = window.document.createElement("button");
     title.className = "source-link card-title";
-    title.textContent = `${source.filename} · 第 ${source.chunk_index} 段`;
+    title.textContent = `[来源${index + 1}] ${source.filename} · 第 ${source.chunk_index} 段`;
     title.type = "button";
     title.title = "打开原文切片";
     title.setAttribute("aria-label", `打开 ${source.filename} 第 ${source.chunk_index} 段原文`);
@@ -460,6 +460,10 @@ async function queryKnowledge(event) {
       if (done) break;
     }
     if (buffer.trim()) handleEvent(buffer);
+  } catch (error) {
+    elements.answerStatus.textContent = "生成失败，请重试";
+    elements.answerStatus.className = "answer-status refused";
+    throw error;
   } finally {
     elements.queryButton.disabled = false;
     elements.queryButton.textContent = "查询";

@@ -1,5 +1,7 @@
+import json
 import os
 import unittest
+from unittest.mock import patch
 
 os.environ.setdefault("RAG_EMBEDDING_BACKEND", "sparse")
 os.environ.setdefault("RAG_MIN_SCORE", "0.045")
@@ -211,6 +213,64 @@ class RagFastApiServiceTest(unittest.TestCase):
             generator._extract_qwen3_answer(raw),
             "C语言变量用于存储数据，声明时需要指定类型。[来源1]",
         )
+
+    def test_qwen3_thinking_toggle_changes_ollama_payload(self) -> None:
+        generator = OllamaAnswerGenerator("qwen3:4b")
+
+        hidden = generator._answer_payload("问题", "资料", stream=True, show_thinking=False)
+        shown = generator._answer_payload("问题", "资料", stream=True, show_thinking=True)
+
+        self.assertFalse(hidden["think"])
+        self.assertTrue(shown["think"])
+        self.assertIn("/no_think", hidden["messages"][1]["content"])
+        self.assertNotIn("/no_think", shown["messages"][1]["content"])
+        self.assertIn("3 个以内", shown["messages"][1]["content"])
+
+    def test_qwen3_structured_thinking_is_separate_from_answer(self) -> None:
+        generator = OllamaAnswerGenerator("qwen3:4b")
+        source = SourceChunk(
+            chunk_id="chunk-1",
+            document_id="doc-1",
+            filename="one.md",
+            chunk_index=1,
+            score=0.9,
+            content="资料",
+        )
+        response_lines = [
+            {"message": {"thinking": "先检查资料。"}, "done": False},
+            {"message": {"content": "变量是给数据起名字的方式。[来源1]"}, "done": False},
+            {"message": {}, "done": True},
+        ]
+
+        class FakeResponse:
+            def __enter__(self):
+                return self
+
+            def __exit__(self, exc_type, exc_value, traceback):
+                return False
+
+            def __iter__(self):
+                return iter(
+                    (json.dumps(line, ensure_ascii=False) + "\n").encode("utf-8")
+                    for line in response_lines
+                )
+
+        captured_payload = {}
+
+        def fake_urlopen(request, timeout):
+            captured_payload.update(json.loads(request.data.decode("utf-8")))
+            return FakeResponse()
+
+        with patch("app.services.answer_generator.urlopen", fake_urlopen):
+            events = list(generator.generate_stream_events("问题", [source], show_thinking=True))
+
+        self.assertTrue(captured_payload["think"])
+        self.assertEqual(
+            [event["type"] for event in events],
+            ["thinking", "answer"],
+        )
+        self.assertEqual(events[0]["text"], "先检查资料。")
+        self.assertEqual(events[1]["text"], "变量是给数据起名字的方式。[来源1]")
 
     def test_stream_answer_passes_all_sources_and_numbers_fallback_refs(self) -> None:
         captured_sources = []

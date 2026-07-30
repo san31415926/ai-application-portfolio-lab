@@ -39,33 +39,7 @@ class OllamaAnswerGenerator:
         show_thinking: bool = False,
     ) -> str:
         context = self._build_context(sources)
-        payload = {
-            "model": self.model_name,
-            "messages": [
-                {
-                    "role": "system",
-                    "content": (
-                        "你是 LearningHub 的学习助理。严格遵守以下规则：只根据参考资料回答，"
-                        "不得补充资料中没有的事实；直接回答问题，控制在 2 到 4 句话；"
-                        "在相关结论后标注 [来源1] 这类编号；不要输出思考过程。"
-                    ),
-                },
-                {
-                    "role": "user",
-                    "content": (
-                        "/no_think\n"
-                        "请直接输出给用户看的最终答案，不要分析问题，不要复述任务规则，"
-                        "不要列出参考资料筛选过程。回答控制在 2 到 4 句话，并在相关结论后"
-                        f"标注来源编号。{self._final_answer_instruction()}"
-                        f"\n\n问题：{query}\n\n参考资料：\n{context}"
-                    ),
-                },
-            ],
-            "stream": False,
-            "think": False,
-            "options": {"temperature": 0.1, "num_predict": RAG_MAX_GENERATION_TOKENS},
-            "keep_alive": "10m",
-        }
+        payload = self._answer_payload(query, context, stream=False, show_thinking=show_thinking)
         result = self._request_chat(payload)
 
         answer = result.get("message", {}).get("content", "").strip()
@@ -96,33 +70,7 @@ class OllamaAnswerGenerator:
         show_thinking: bool = False,
     ) -> Iterator[dict[str, str]]:
         context = self._build_context(sources)
-        payload = {
-            "model": self.model_name,
-            "messages": [
-                {
-                    "role": "system",
-                    "content": (
-                        "你是 LearningHub 的学习助理。严格遵守以下规则：只根据参考资料回答，"
-                        "不得补充资料中没有的事实；直接回答问题，控制在 2 到 4 句话；"
-                        "在相关结论后标注 [来源1] 这类编号；不要输出思考过程。"
-                    ),
-                },
-                {
-                    "role": "user",
-                    "content": (
-                        "/no_think\n"
-                        "请直接输出给用户看的最终答案，不要分析问题，不要复述任务规则，"
-                        "不要列出参考资料筛选过程。回答控制在 2 到 4 句话，并在相关结论后"
-                        f"标注来源编号。{self._final_answer_instruction()}"
-                        f"\n\n问题：{query}\n\n参考资料：\n{context}"
-                    ),
-                },
-            ],
-            "stream": True,
-            "think": False,
-            "options": {"temperature": 0.1, "num_predict": RAG_MAX_GENERATION_TOKENS},
-            "keep_alive": "10m",
-        }
+        payload = self._answer_payload(query, context, stream=True, show_thinking=show_thinking)
         request = Request(
             f"{self.base_url}/api/chat",
             data=json.dumps(payload, ensure_ascii=False).encode("utf-8"),
@@ -133,11 +81,17 @@ class OllamaAnswerGenerator:
             with urlopen(request, timeout=self.timeout) as response:
                 hide_reasoning = self._requires_reasoning_cleanup()
                 raw_answer = ""
+                structured_thinking = False
                 for raw_line in response:
                     if not raw_line.strip():
                         continue
                     event = json.loads(raw_line.decode("utf-8"))
                     message = event.get("message") or {}
+                    thinking_chunk = message.get("thinking", "")
+                    if thinking_chunk:
+                        structured_thinking = True
+                        if show_thinking:
+                            yield {"type": "thinking", "text": str(thinking_chunk)}
                     chunk = message.get("content", "") or event.get("response", "")
                     if chunk:
                         chunk = str(chunk)
@@ -145,7 +99,7 @@ class OllamaAnswerGenerator:
                             yield {"type": "answer", "text": chunk}
                         else:
                             raw_answer += chunk
-                            if show_thinking:
+                            if show_thinking and not structured_thinking:
                                 yield {"type": "thinking", "text": chunk}
                     if event.get("done"):
                         if hide_reasoning:
@@ -229,6 +183,56 @@ class OllamaAnswerGenerator:
     def _requires_reasoning_cleanup(self) -> bool:
         return self.model_name.lower().startswith("qwen3")
 
+    def _answer_payload(
+        self,
+        query: str,
+        context: str,
+        stream: bool,
+        show_thinking: bool,
+    ) -> dict[str, object]:
+        thinking_enabled = show_thinking and self._requires_reasoning_cleanup()
+        if thinking_enabled:
+            system_instruction = (
+                "思考内容会由客户端单独展示；思考最多保留 3 个简短要点，最终回答只保留可以直接给用户阅读的结论。"
+            )
+            mode_instruction = "可以先思考，但只写 3 个以内的简短要点，然后立即输出最终答案。"
+        else:
+            system_instruction = "不要输出思考过程。"
+            mode_instruction = "/no_think"
+        return {
+            "model": self.model_name,
+            "messages": [
+                {
+                    "role": "system",
+                    "content": (
+                        "你是 LearningHub 的学习助理。严格遵守以下规则：只根据参考资料回答，"
+                        "不得补充资料中没有的事实；直接回答问题，控制在 2 到 4 句话；"
+                        "在相关结论后标注 [来源1] 这类编号；"
+                        f"{system_instruction}"
+                    ),
+                },
+                {
+                    "role": "user",
+                    "content": (
+                        f"{mode_instruction}\n"
+                        "请输出给用户看的最终答案，不要复述任务规则，不要列出参考资料筛选过程。"
+                        "回答控制在 2 到 4 句话，并在相关结论后标注来源编号。"
+                        f"{self._final_answer_instruction()}"
+                        f"\n\n问题：{query}\n\n参考资料：\n{context}"
+                    ),
+                },
+            ],
+            "stream": stream,
+            "think": thinking_enabled,
+            "options": {
+                "temperature": 0.1,
+                "num_predict": min(RAG_MAX_GENERATION_TOKENS, 1536 if thinking_enabled else 768)
+                if self._requires_reasoning_cleanup()
+                else RAG_MAX_GENERATION_TOKENS,
+            },
+            "keep_alive": "10m",
+        }
+
     def _final_answer_instruction(self) -> str:
         if not self._requires_reasoning_cleanup():
             return ""
@@ -240,12 +244,13 @@ class OllamaAnswerGenerator:
         if not raw_answer:
             return ""
         marker_position = raw_answer.rfind(FINAL_ANSWER_MARKER)
-        if marker_position < 0:
-            return ""
-        if marker_position < len(raw_answer) * 0.65:
-            return ""
-        candidate = raw_answer[marker_position + len(FINAL_ANSWER_MARKER) :]
-        candidate = re.split(r"\n\s*\n", candidate, maxsplit=1)[0]
+        if marker_position >= 0:
+            if marker_position < len(raw_answer) * 0.65:
+                return ""
+            candidate = raw_answer[marker_position + len(FINAL_ANSWER_MARKER) :]
+            candidate = re.split(r"\n\s*\n", candidate, maxsplit=1)[0]
+        else:
+            candidate = raw_answer
         candidate = candidate.strip().strip('"“”')
         if not candidate or len(candidate) > 1200:
             return ""

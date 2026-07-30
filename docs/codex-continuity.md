@@ -39,6 +39,8 @@ C:\Users\<用户名>\.codex\skills\ai-career-portfolio-coach\
 - `docs/git-workflow.md`
 - `docs/learning-roadmap.md`
 - `projects/02-rag-fastapi-service/README.md`
+- `docs/datapilot-project-plan.md`
+- `projects/03-data-analysis-agent/README.md`
 - 根目录 `README.md`
 
 当前旗舰项目：
@@ -46,6 +48,20 @@ C:\Users\<用户名>\.codex\skills\ai-career-portfolio-coach\
 ```text
 projects/02-rag-fastapi-service/  # LearningHub
 ```
+
+当前规划中的第二个简历项目：
+
+```text
+projects/03-data-analysis-agent/  # DataPilot：本地自然语言数据分析 Agent
+```
+
+DataPilot 的完整执行计划保存在：
+
+```text
+docs/datapilot-project-plan.md
+```
+
+计划状态：已完成上游项目分析、选题和边界冻结；尚未实现代码。后续必须按计划逐阶段开发、测试和更新记录，不把未验证的功能写入简历。
 
 ## 需要持续更新的内容
 

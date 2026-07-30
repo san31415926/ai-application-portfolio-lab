@@ -1,5 +1,16 @@
 # 技术决策记录
 
+## 2026-07-30：确定第二个简历项目为 DataPilot 数据分析 Agent
+
+- 用户希望开始第二个面向 AI 应用开发工程师岗位的项目，并且与 LearningHub 有明显区别。
+- 参考项目：[`Shubhamsaboo/awesome-llm-apps`](https://github.com/Shubhamsaboo/awesome-llm-apps) 中的 `starter_ai_agents/ai_data_analysis_agent`，其核心是 Streamlit、Agno、OpenAI、DuckDB 和 Pandas 的自然语言数据分析示例。
+- 决策：创建独立项目 `projects/03-data-analysis-agent/`，展示名为“DataPilot：本地自然语言数据分析 Agent”，计划创建的 GitHub 仓库名为 `datapilot-ai-data-analysis-agent`。
+- 改造方向：将云端 OpenAI 替换为 Ollama 本地模型；将英文通用示例替换为中文电商经营数据；将模型自由生成代码替换为结构化分析计划和受控工具；增加 DuckDB 只读 SQL 安全校验、数据质量检查、错误处理、测试和固定评估集。
+- 选择理由：该项目关注结构化数据分析和 Agent 工具调用，可以体现与 LearningHub 不同的 AI 应用能力；使用 Streamlit 也能与第一个项目的 FastAPI + HTML 工作台形成技术栈差异。
+- 未选择 RAG/Web Research/语音/多模态方向：RAG 已是 LearningHub 的核心，继续做会重复；Web Research 需要网络来源和更复杂的真实性边界；语音和多模态会增加模型、资源和演示复杂度，当前不适合作为第二个项目的第一目标。
+- 当前状态：只完成选题、边界和计划记录，尚未实现代码、测试或效果指标。
+- 面试定位：只能表述为“参考开源数据分析 Agent 方案，计划改造为本地中文结构化数据分析工作台”；完成并验证前，不宣称已经实现或达到任何准确率。
+
 ## 2026-07-27：将旗舰项目调整为轻量版 RAG Notebook
 
 - 用户偏好 `RMA-MUN/RAGNotebook` 的产品形态，希望把它发展为适合写入简历的项目。

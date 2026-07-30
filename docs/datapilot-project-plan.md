@@ -409,7 +409,7 @@ git diff --stat
 - [x] 写入本严格计划。
 - [x] 创建项目骨架和独立依赖。
 - [x] 构造中文电商样例数据。
-- [ ] 实现数据读取和质量检查。
+- [x] 实现数据读取和类型识别；数据质量检查待阶段 5。
 - [ ] 实现 SQL 安全和受控工具。
 - [ ] 接入本地模型和结构化 Agent。
 - [ ] 完成界面、测试、评估和简历材料。
@@ -417,6 +417,8 @@ git diff --stat
 阶段 2 验收记录：独立虚拟环境和依赖安装成功；`unittest` 通过 3 项；`compileall` 通过；Streamlit `/_stcore/health` 返回 `200 ok`。Plotly/Kaleido 的 PNG 导出问题已记录到 `docs/decision-log.md`，留待阶段 11 处理。
 
 阶段 3 验收记录：生成 `data/sample_ecommerce.csv` 和 `data/sample_ecommerce.xlsx`；固定种子测试通过；CSV/XLSX 行数、字段和关键数值一致；样例数据测试 3 项通过；字段说明和缺失值、重复行、异常金额场景已写入 `data/README.md`。
+
+阶段 4 验收记录：新增 `src/data_loader.py` 并接入 Streamlit；支持 CSV/XLSX、UTF-8/GBK 类编码、文件大小和行数限制、空文件、无表头、损坏文件和不支持扩展名拒绝；清洗空白及重复字段名；返回原始数据、类型转换数据、字段画像和转换失败行。完整测试集 14 项通过，`compileall` 通过，页面健康检查返回 `200 ok`。阶段 5 将继续实现数据质量统计和警告。
 
 ## 8. GitHub 状态
 

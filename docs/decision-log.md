@@ -1,5 +1,14 @@
 # 技术决策记录
 
+## 2026-07-31：完成 DataPilot 阶段 8 Ollama 本地模型接入
+
+- 新增 `src/ollama_client.py`，封装 Ollama `/api/tags` 模型发现和 `/api/chat` 非流式聊天请求，客户端不依赖云端 API Key。
+- 模型选择：优先使用 Ollama 返回的 `completion`、`tools` 或 `thinking` 能力；对没有能力字段的旧版本响应，按模型名过滤 `embed`/`embedding` 标记。当前本机发现 `qwen2.5:3b`、`qwen3:4b` 和 `qwen3:0.6b` 三个生成模型，`embeddinggemma:300m` 未进入生成模型选项。
+- 失败处理：统一转换连接失败、超时、HTTP 错误、模型不存在、非 JSON 和空内容为带错误码的 `OllamaClientError` 或模型列表状态，不把异常堆栈展示给页面。
+- 配置：通过环境变量集中管理 Ollama 地址、请求超时、温度和最大输出长度；页面默认不主动访问服务，用户点击检测按钮后才读取模型列表，检测成功后可选择模型并执行一次真实测试。
+- 验证：mock 测试覆盖模型过滤、请求体参数、服务不可用、模型不存在、空回答和非法消息；完整 `unittest` 测试集 42 项通过，`compileall` 与 `git diff --check` 通过。本机使用 `qwen2.5:3b` 成功返回真实回答，单次耗时约 9.9 秒。
+- 面试定位：可以表述为“封装 Ollama 本地模型发现和调用，处理模型选择与失败状态”；不能表述为已经完成自然语言到工具调用的结构化 Agent。
+
 ## 2026-07-31：完成 DataPilot 阶段 7 Pydantic 工具契约与受控分析工具
 
 - 新增 `src/tools.py`，把数据概览、只读 SQL、分组统计、IQR 异常检测和图表配置拆成可独立调用的工具。

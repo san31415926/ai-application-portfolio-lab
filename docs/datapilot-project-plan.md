@@ -5,7 +5,7 @@
 - GitHub 仓库名：`datapilot-ai-data-analysis-agent`
 - 项目展示名：`DataPilot：本地自然语言数据分析 Agent`
 - 目标岗位：AI 应用开发工程师
-- 当前状态：阶段 7 已完成，阶段 8 待开始；已接入 SQL 查询、安全边界和受控工具，尚未接入模型调用
+- 当前状态：阶段 8 已完成，阶段 9 待开始；已接入 SQL 查询、安全边界、受控工具和 Ollama 模型客户端，尚未接入结构化 Agent 计划
 - 当前负责人：独立开发
 - 参考项目：[`Shubhamsaboo/awesome-llm-apps`](https://github.com/Shubhamsaboo/awesome-llm-apps) 中的 `starter_ai_agents/ai_data_analysis_agent`
 - 本项目与 LearningHub 的区别：LearningHub 解决中文文档知识库检索和来源约束问答；DataPilot 解决结构化业务数据的自然语言分析和受控工具调用。
@@ -413,7 +413,8 @@ git diff --stat
 - [x] 实现数据概览和质量检查。
 - [x] 实现 SQL 安全和受控查询引擎。
 - [x] 实现 Pydantic 工具契约和受控分析工具。
-- [ ] 接入本地模型和结构化 Agent。
+- [x] 接入本地 Ollama 模型和模型选择。
+- [ ] 接入结构化 Agent 计划和校验。
 - [ ] 完成界面、测试、评估和简历材料。
 
 阶段 2 验收记录：独立虚拟环境和依赖安装成功；`unittest` 通过 3 项；`compileall` 通过；Streamlit `/_stcore/health` 返回 `200 ok`。Plotly/Kaleido 的 PNG 导出问题已记录到 `docs/decision-log.md`，留待阶段 11 处理。
@@ -428,9 +429,11 @@ git diff --stat
 
 阶段 7 验收记录：新增 `src/tools.py`，为数据概览、只读 SQL、分组统计、IQR 异常检测和图表配置定义 Pydantic 输入/输出模型；字段名、聚合函数、排序方向、图表类型、数值字段和返回条数均经过白名单或范围校验。工具统一返回结构化状态和 `ToolExecutionRecord`，SQL 输入只记录摘要哈希，结果按 JSON 兼容格式返回；异常检测使用固定 IQR 规则，图表工具只生成配置和数据，不生成 PNG。工具可以脱离 LLM 单独测试，未知字段会在进入查询引擎前拒绝；完整测试集 37 项通过，`compileall` 和 `git diff --check` 通过；阶段 8 将继续接入 Ollama 本地模型。
 
+阶段 8 验收记录：新增 `src/ollama_client.py`，通过 Ollama `/api/tags` 发现本机模型，通过名称标记和能力字段过滤仅用于 embedding 的模型；通过 `/api/chat` 执行非流式本地聊天请求，统一处理连接失败、超时、模型不存在、非 JSON 和空回答，并集中配置超时时间、温度和最大输出长度。Streamlit 侧边栏增加手动模型检测、生成模型选择和真实模型测试按钮，未点击检测时不主动访问 Ollama。mock 测试覆盖模型过滤、请求参数、服务不可用、模型不存在、空回答和非法消息；完整测试集 42 项通过，`compileall` 和 `git diff --check` 通过。本机真实验收发现 3 个生成模型，`qwen2.5:3b` 成功返回回答；阶段 9 将继续实现结构化分析计划。
+
 ## 8. GitHub 状态
 
-独立 GitHub 仓库已经创建，并已同步到阶段 7 的代码和项目 README：
+独立 GitHub 仓库已经创建，并已同步到阶段 8 的代码和项目 README：
 
 ```text
 https://github.com/san31415926/datapilot-ai-data-analysis-agent

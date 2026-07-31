@@ -5,7 +5,7 @@
 - GitHub 仓库名：`datapilot-ai-data-analysis-agent`
 - 项目展示名：`DataPilot：本地自然语言数据分析 Agent`
 - 目标岗位：AI 应用开发工程师
-- 当前状态：阶段 10 已完成，阶段 11 待开始；已接入计划执行、工具结果展示、基于真实证据的中文报告和安全降级，尚未完成图表展示、导出和固定评估集
+- 当前状态：阶段 11 已完成，固定评估、失败案例记录和演示截图待开始；已接入计划执行、工具结果展示、基于真实证据的中文报告、Plotly 图表和 CSV/PNG/Markdown 导出
 - 当前负责人：独立开发
 - 参考项目：[`Shubhamsaboo/awesome-llm-apps`](https://github.com/Shubhamsaboo/awesome-llm-apps) 中的 `starter_ai_agents/ai_data_analysis_agent`
 - 本项目与 LearningHub 的区别：LearningHub 解决中文文档知识库检索和来源约束问答；DataPilot 解决结构化业务数据的自然语言分析和受控工具调用。
@@ -416,6 +416,9 @@ git diff --stat
 - [x] 接入本地 Ollama 模型和模型选择。
 - [x] 接入结构化分析计划和校验。
 - [x] 按计划执行受控工具并生成中文报告。
+- [x] 接入 Plotly 柱状图、折线图、饼图和结构化结果可视化。
+- [x] 接入 CSV、PNG 和 Markdown 报告导出，并处理 PNG 环境降级。
+- [x] 增加空结果、负值、中文字体、图表契约和导出边界测试。
 - [ ] 完成界面、测试、评估和简历材料。
 
 阶段 2 验收记录：独立虚拟环境和依赖安装成功；`unittest` 通过 3 项；`compileall` 通过；Streamlit `/_stcore/health` 返回 `200 ok`。Plotly/Kaleido 的 PNG 导出问题已记录到 `docs/decision-log.md`，留待阶段 11 处理。
@@ -434,7 +437,9 @@ git diff --stat
 
 阶段 9 验收记录：新增 `src/planner.py`，用 Pydantic 定义 `AnalysisPlan`、步骤和问题模型；支持从纯 JSON、Markdown 代码块或带额外说明的模型输出中提取计划。计划先校验工具名、参数契约、字段白名单、数值字段要求和只读 SQL，再允许页面展示；校验失败最多自动修复一次，任何失败计划都不会执行工具。为提高小模型稳定性，提示词使用 `column_0` 等 ASCII 字段别名，后端校验前映射回真实中文列名；同时兼容单元素数组、`sum(column_1)` 和缺失说明字段等有限输出变体。Ollama 客户端新增可选 `think` 参数，规划请求显式使用 `think=false`，避免 qwen3 将输出预算耗尽在思考字段。完整测试集 53 项通过，`compileall` 和 `git diff --check` 通过；真实 `qwen2.5:3b` 计划生成成功，Streamlit 页面实测完成模型检测、样例 CSV 上传和计划展示，且没有自动执行工具。`qwen3:4b` 当前输出稳定性不足，已保留错误拦截，不作为阶段 9 的稳定验收模型；阶段 10 将接入按计划执行工具和基于真实结果的中文报告。
 
-阶段 10 验收记录：新增 `src/analysis_runner.py`，对计划执行前再次调用计划校验，按顺序调用数据概览、只读 SQL、分组统计、异常检测和图表配置工具；任一步工具失败都会记录结构化错误并停止后续步骤。新增 `src/report_generator.py`，只将成功工具的有限结构化结果传给本地模型，要求返回包含报告标题、摘要、事实、限制和引用步骤的 JSON；引用不存在的步骤、模型超时或 JSON 不合格时返回安全降级说明，不生成未经证据支持的结论。Streamlit 页面增加“执行计划并生成报告”按钮、步骤结果、执行记录和中文报告展示，并使用 `0.0` 温度提高结构化请求稳定性。完整测试集 62 项通过，`compileall` 和 `git diff --check` 通过；真实页面完成模型检测、样例 CSV 上传、计划生成、分组统计执行和 `qwen2.5:3b` 中文报告生成。阶段 11 将处理 Plotly 图表展示、CSV/Markdown/PNG 导出和固定评估集。
+阶段 10 验收记录：新增 `src/analysis_runner.py`，对计划执行前再次调用计划校验，按顺序调用数据概览、只读 SQL、分组统计、异常检测和图表配置工具；任一步工具失败都会记录结构化错误并停止后续步骤。新增 `src/report_generator.py`，只将成功工具的有限结构化结果传给本地模型，要求返回包含报告标题、摘要、事实、限制和引用步骤的 JSON；引用不存在的步骤、模型超时或 JSON 不合格时返回安全降级说明，不生成未经证据支持的结论。Streamlit 页面增加“执行计划并生成报告”按钮、步骤结果、执行记录和中文报告展示，并使用 `0.0` 温度提高结构化请求稳定性。完整测试集 62 项通过，`compileall` 和 `git diff --check` 通过；真实页面完成模型检测、样例 CSV 上传、计划生成、分组统计执行和 `qwen2.5:3b` 中文报告生成。阶段 11 已在后续验收记录中完成图表和导出，固定评估集仍待后续阶段处理。
+
+阶段 11 验收记录：新增 `src/visualization.py`，只接受已校验的 `ChartSpec`，渲染中文 Plotly 柱状图、折线图和饼图；空结果会显示空状态，饼图遇到负值会提示切换图表类型，不把负值伪装成占比。新增 `src/exporters.py`，提供带 UTF-8 BOM 的 CSV 和包含报告正文、工具证据、结果表与审计摘要的 Markdown 导出。Streamlit 页面支持展示计划中的图表，也支持从成功工具返回的结构化表格手动选择图表类型和字段；图表 CSV 立即可下载，PNG 按需生成。当前 Windows 环境中的 Plotly 5.24.1 + Kaleido 0.2.1 仍会启动失败，因此 PNG 优先尝试 Plotly，失败后使用 Pillow 生成中文静态 PNG，并在页面明确提示实际后端。完整测试集 68 项通过，`compileall`、`git diff --check` 通过，Streamlit `/_stcore/health` 返回 `200 ok`。固定评估问题、失败案例记录和演示截图留到后续阶段，不提前宣称已完成。
 
 ## 8. GitHub 状态
 

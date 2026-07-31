@@ -64,7 +64,7 @@ projects/02-rag-fastapi-service/
 | 1 | PDF 对话 / 基础 RAG | 已完成早期原型 | 理解 PDF 读取和基础检索 |
 | 2 | LearningHub | MVP 可运行 | 展示 FastAPI、双本地模型、向量检索、来源约束生成、拒答和笔记管理 |
 | 3 | Chroma 向量库升级 | 下一步 | 从内存向量检索升级为可持久化 Notebook RAG |
-| 4 | DataPilot 数据分析 Agent | 开发中（阶段 10 完成） | 面向业务数据的本地自然语言分析助手 |
+| 4 | DataPilot 数据分析 Agent | 开发中（阶段 11 完成） | 面向业务数据的本地自然语言分析助手 |
 
 ## 仓库结构
 

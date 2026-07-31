@@ -1,12 +1,21 @@
 # 技术决策记录
 
+# 2026-07-31：完成 DataPilot 阶段 11 图表与导出
+
+- 新增 `src/visualization.py`，只接受 `ChartSpec` 结构化结果，渲染中文 Plotly 柱状图、折线图和饼图；空结果、负值饼图和过多类别不会让页面崩溃。
+- 新增 `src/exporters.py`，使用 UTF-8 BOM 导出 CSV，使用 Markdown 保存报告正文、工具证据、结果表和审计摘要。
+- Streamlit 支持显示计划图表，也支持从成功工具返回的表格手动选择图表类型和字段；CSV 立即可下载，PNG 按需生成，避免普通图表交互被静态渲染阻塞。
+- 当前 Windows 环境中 Plotly 5.24.1 + Kaleido 0.2.1 的原生 PNG 导出仍会启动失败，因此 `export_chart_png()` 优先调用 Plotly，失败时使用 Pillow 生成有效静态 PNG，并通过 `PNGExportResult.backend` 和页面提示保留真实状态。
+- 验证：新增图表和导出测试；完整 `unittest` 测试 68 项通过；`compileall` 和 `git diff --check` 通过；Streamlit `/_stcore/health` 返回 `200 ok`。
+- 面试定位：可以表述为“将受控工具返回的 ChartSpec 交给 Plotly 渲染，并提供可追溯 CSV/Markdown/PNG 导出，针对 Kaleido 环境差异设计了明确的 Pillow 降级”；不能表述为模型可以直接生成前端代码，或所有机器都能稳定使用 Kaleido 原生 PNG。
+
 # 2026-07-31：完成 DataPilot 阶段 10 计划执行与中文报告
 
 - 新增 `src/analysis_runner.py`，在执行前再次校验 `AnalysisPlan`，按顺序调用已有受控工具；工具状态、耗时、参数摘要和有限结果统一保存为 `StepExecution`，遇到失败立即停止后续步骤。
 - 新增 `src/report_generator.py`，报告模型只能读取成功工具的结构化证据，输出标题、摘要、事实、限制和引用步骤；报告引用不存在的步骤、返回格式不合格或 Ollama 不可用时，返回不含模型结论的安全降级说明。
 - Streamlit 增加“执行计划并生成报告”按钮，按上传文件哈希清理旧计划、旧执行结果和旧报告；页面展示每一步工具结果和审计记录。
 - 结构化规划和报告请求固定使用 `temperature=0.0`，普通模型测试仍使用配置温度；本机 qwen2.5:3b 的固定问题连续测试生成合法计划，真实页面完成计划、分组统计和中文报告链路。
-- 验证：完整 `unittest` 测试 62 项通过；`compileall` 和 `git diff --check` 通过；真实 Streamlit `AppTest` 链路无异常。阶段 11 继续处理图表、导出和固定评估。
+- 验证：完整 `unittest` 测试 62 项通过；`compileall` 和 `git diff --check` 通过；真实 Streamlit `AppTest` 链路无异常。阶段 11 的图表和导出已在后续记录中完成。
 - 面试定位：可以表述为“对结构化计划做二次校验后调用白名单工具，并把真实工具结果交给本地模型生成带步骤引用的中文报告”；不能表述为支持生产数据库、任意代码执行或所有本地模型都稳定完成 Agent 规划。
 
 # 2026-07-31：完成 DataPilot 阶段 9 结构化分析计划

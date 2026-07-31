@@ -5,7 +5,7 @@
 - GitHub 仓库名：`datapilot-ai-data-analysis-agent`
 - 项目展示名：`DataPilot：本地自然语言数据分析 Agent`
 - 目标岗位：AI 应用开发工程师
-- 当前状态：已选题，已完成上游项目分析，尚未开始实现
+- 当前状态：阶段 5 已完成，阶段 6 待开始；尚未接入 SQL 查询和模型调用
 - 当前负责人：独立开发
 - 参考项目：[`Shubhamsaboo/awesome-llm-apps`](https://github.com/Shubhamsaboo/awesome-llm-apps) 中的 `starter_ai_agents/ai_data_analysis_agent`
 - 本项目与 LearningHub 的区别：LearningHub 解决中文文档知识库检索和来源约束问答；DataPilot 解决结构化业务数据的自然语言分析和受控工具调用。
@@ -409,7 +409,8 @@ git diff --stat
 - [x] 写入本严格计划。
 - [x] 创建项目骨架和独立依赖。
 - [x] 构造中文电商样例数据。
-- [x] 实现数据读取和类型识别；数据质量检查待阶段 5。
+- [x] 实现数据读取和类型识别。
+- [x] 实现数据概览和质量检查。
 - [ ] 实现 SQL 安全和受控工具。
 - [ ] 接入本地模型和结构化 Agent。
 - [ ] 完成界面、测试、评估和简历材料。
@@ -420,15 +421,17 @@ git diff --stat
 
 阶段 4 验收记录：新增 `src/data_loader.py` 并接入 Streamlit；支持 CSV/XLSX、UTF-8/GBK 类编码、文件大小和行数限制、空文件、无表头、损坏文件和不支持扩展名拒绝；清洗空白及重复字段名；返回原始数据、类型转换数据、字段画像和转换失败行。完整测试集 14 项通过，`compileall` 通过，页面健康检查返回 `200 ok`。阶段 5 将继续实现数据质量统计和警告。
 
+阶段 5 验收记录：新增 `src/data_quality.py` 并接入 Streamlit；输出行列数、缺失单元格、唯一值、重复行、重复标识、数值范围、字段角色和结构化质量问题；样例数据报告识别出 2 个缺失单元格、1 行重复记录和 1 个重复标识；完整测试集 17 项通过，`compileall` 通过。页面健康检查命令在本次执行中受到当前命令策略拦截，未将其记为本阶段新增验证结果；下一阶段进入 DuckDB 只读查询和 SQL 安全。
+
 ## 8. GitHub 状态
 
-独立 GitHub 仓库已经创建并完成阶段 2 README 和骨架文件的首次推送：
+独立 GitHub 仓库已经创建，并已同步到阶段 5 的代码和项目 README：
 
 ```text
 https://github.com/san31415926/datapilot-ai-data-analysis-agent
 ```
 
-阶段 2 的计划、决策记录和连续性文档也已同步到作品集总仓库：
+阶段 5 的计划、决策记录和连续性文档也已同步到作品集总仓库：
 
 ```text
 https://github.com/san31415926/ai-application-portfolio-lab

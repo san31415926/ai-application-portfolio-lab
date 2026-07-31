@@ -1,5 +1,15 @@
 # 技术决策记录
 
+# 2026-07-31：完成 DataPilot 阶段 9 结构化分析计划
+
+- 新增 `projects/03-data-analysis-agent/src/planner.py`，用 Pydantic 定义分析计划、步骤、问题和结果模型；支持从纯 JSON、Markdown 代码块和带额外说明的模型文本中提取计划。
+- 校验顺序固定为：计划结构 -> 工具参数 -> 当前上传字段白名单/数值字段 -> SQL 只读校验。计划只在全部通过后展示，当前页面不会自动执行工具。
+- 为小型本地模型增加有限兼容层：提示词使用 `column_0` 等 ASCII 字段别名，服务端再映射回真实中文字段；兼容单元素数组、`sum(column_1)` 和缺失 `expected_output` 等无歧义变体，但不会放宽工具或 SQL 安全边界。
+- `OllamaClient.chat()` 增加可选 `think` 参数，结构化计划请求使用 `response_format="json"` 和 `think=false`；复杂 `oneOf` JSON Schema 在本机 Ollama 上会触发 grammar 初始化失败，因此保留 JSON 模式并由 Pydantic 完成最终校验。
+- 修复策略最多一次。真实测试中 `qwen2.5:3b` 能生成按地区汇总销售额的 `sum` 计划；Streamlit 页面完成“检测模型 -> 上传样例 CSV -> 生成并展示计划”链路，计划未自动执行工具。`qwen3:4b` 已可选择但当前计划输出不稳定，失败会被拦截，不能写成稳定支持。
+- 验证：完整 `unittest` 测试 53 项通过；`compileall` 和 `git diff --check` 通过；真实模型调用和 Streamlit `AppTest` 页面链路通过。
+- 面试定位：可以表述为“实现本地模型生成结构化分析计划，并在执行前做 Pydantic、字段白名单和只读 SQL 校验”；不能表述为已经完成按计划自动执行和中文报告生成，后者属于阶段 10。
+
 ## 2026-07-31：完成 DataPilot 阶段 8 Ollama 本地模型接入
 
 - 新增 `src/ollama_client.py`，封装 Ollama `/api/tags` 模型发现和 `/api/chat` 非流式聊天请求，客户端不依赖云端 API Key。

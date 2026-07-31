@@ -5,7 +5,7 @@
 - GitHub 仓库名：`datapilot-ai-data-analysis-agent`
 - 项目展示名：`DataPilot：本地自然语言数据分析 Agent`
 - 目标岗位：AI 应用开发工程师
-- 当前状态：阶段 11 已完成，固定评估、失败案例记录和演示截图待开始；已接入计划执行、工具结果展示、基于真实证据的中文报告、Plotly 图表和 CSV/PNG/Markdown 导出
+- 当前状态：阶段 11 已完成，失败案例记录和演示截图待开始；已接入计划执行、工具结果展示、基于真实证据的中文报告、Plotly 图表、CSV/PNG/Markdown 导出和 20 条固定中文评估集
 - 当前负责人：独立开发
 - 参考项目：[`Shubhamsaboo/awesome-llm-apps`](https://github.com/Shubhamsaboo/awesome-llm-apps) 中的 `starter_ai_agents/ai_data_analysis_agent`
 - 本项目与 LearningHub 的区别：LearningHub 解决中文文档知识库检索和来源约束问答；DataPilot 解决结构化业务数据的自然语言分析和受控工具调用。
@@ -419,6 +419,7 @@ git diff --stat
 - [x] 接入 Plotly 柱状图、折线图、饼图和结构化结果可视化。
 - [x] 接入 CSV、PNG 和 Markdown 报告导出，并处理 PNG 环境降级。
 - [x] 增加空结果、负值、中文字体、图表契约和导出边界测试。
+- [x] 建立 20 条固定中文评估问题和结构化计划评分脚本。
 - [ ] 完成界面、测试、评估和简历材料。
 
 阶段 2 验收记录：独立虚拟环境和依赖安装成功；`unittest` 通过 3 项；`compileall` 通过；Streamlit `/_stcore/health` 返回 `200 ok`。Plotly/Kaleido 的 PNG 导出问题已记录到 `docs/decision-log.md`，留待阶段 11 处理。
@@ -439,7 +440,7 @@ git diff --stat
 
 阶段 10 验收记录：新增 `src/analysis_runner.py`，对计划执行前再次调用计划校验，按顺序调用数据概览、只读 SQL、分组统计、异常检测和图表配置工具；任一步工具失败都会记录结构化错误并停止后续步骤。新增 `src/report_generator.py`，只将成功工具的有限结构化结果传给本地模型，要求返回包含报告标题、摘要、事实、限制和引用步骤的 JSON；引用不存在的步骤、模型超时或 JSON 不合格时返回安全降级说明，不生成未经证据支持的结论。Streamlit 页面增加“执行计划并生成报告”按钮、步骤结果、执行记录和中文报告展示，并使用 `0.0` 温度提高结构化请求稳定性。完整测试集 62 项通过，`compileall` 和 `git diff --check` 通过；真实页面完成模型检测、样例 CSV 上传、计划生成、分组统计执行和 `qwen2.5:3b` 中文报告生成。阶段 11 已在后续验收记录中完成图表和导出，固定评估集仍待后续阶段处理。
 
-阶段 11 验收记录：新增 `src/visualization.py`，只接受已校验的 `ChartSpec`，渲染中文 Plotly 柱状图、折线图和饼图；空结果会显示空状态，饼图遇到负值会提示切换图表类型，不把负值伪装成占比。新增 `src/exporters.py`，提供带 UTF-8 BOM 的 CSV 和包含报告正文、工具证据、结果表与审计摘要的 Markdown 导出。Streamlit 页面支持展示计划中的图表，也支持从成功工具返回的结构化表格手动选择图表类型和字段；图表 CSV 立即可下载，PNG 按需生成。当前 Windows 环境中的 Plotly 5.24.1 + Kaleido 0.2.1 仍会启动失败，因此 PNG 优先尝试 Plotly，失败后使用 Pillow 生成中文静态 PNG，并在页面明确提示实际后端。完整测试集 68 项通过，`compileall`、`git diff --check` 通过，Streamlit `/_stcore/health` 返回 `200 ok`。固定评估问题、失败案例记录和演示截图留到后续阶段，不提前宣称已完成。
+阶段 11 验收记录：新增 `src/visualization.py`，只接受已校验的 `ChartSpec`，渲染中文 Plotly 柱状图、折线图和饼图；空结果会显示空状态，饼图遇到负值会提示切换图表类型，不把负值伪装成占比。新增 `src/exporters.py`，提供带 UTF-8 BOM 的 CSV 和包含报告正文、工具证据、结果表与审计摘要的 Markdown 导出。Streamlit 页面支持展示计划中的图表，也支持从成功工具返回的结构化表格手动选择图表类型和字段；图表 CSV 立即可下载，PNG 按需生成。当前 Windows 环境中的 Plotly 5.24.1 + Kaleido 0.2.1 仍会启动失败，因此 PNG 优先尝试 Plotly，失败后使用 Pillow 生成中文静态 PNG，并在页面明确提示实际后端。新增 `data/evaluation_cases.json`、`src/evaluation.py` 和 `scripts/run_evaluation.py`，提供覆盖 8 个分类的 20 条中文固定评估问题，并按工具、字段、拒答状态和图表类型评分。完整测试集 72 项通过，`compileall`、`git diff --check` 通过，Streamlit `/_stcore/health` 返回 `200 ok`，评估集结构检查脚本通过。失败案例记录和演示截图留到后续阶段，不提前宣称已完成。
 
 ## 8. GitHub 状态
 

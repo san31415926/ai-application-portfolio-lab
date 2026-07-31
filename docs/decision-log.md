@@ -6,7 +6,8 @@
 - 新增 `src/exporters.py`，使用 UTF-8 BOM 导出 CSV，使用 Markdown 保存报告正文、工具证据、结果表和审计摘要。
 - Streamlit 支持显示计划图表，也支持从成功工具返回的表格手动选择图表类型和字段；CSV 立即可下载，PNG 按需生成，避免普通图表交互被静态渲染阻塞。
 - 当前 Windows 环境中 Plotly 5.24.1 + Kaleido 0.2.1 的原生 PNG 导出仍会启动失败，因此 `export_chart_png()` 优先调用 Plotly，失败时使用 Pillow 生成有效静态 PNG，并通过 `PNGExportResult.backend` 和页面提示保留真实状态。
-- 验证：新增图表和导出测试；完整 `unittest` 测试 68 项通过；`compileall` 和 `git diff --check` 通过；Streamlit `/_stcore/health` 返回 `200 ok`。
+- 新增 `data/evaluation_cases.json`、`src/evaluation.py` 和 `scripts/run_evaluation.py`，固定 20 条中文问题，覆盖总量、分组、趋势、异常、组合条件、图表、无关和不可回答 8 个分类；评分拆成工具、关键字段、拒答状态和图表类型，不把主观语言质量伪装成准确率。
+- 验证：新增图表、导出和评估测试；完整 `unittest` 测试 72 项通过；`compileall` 和 `git diff --check` 通过；Streamlit `/_stcore/health` 返回 `200 ok`；固定评估集结构检查脚本通过。
 - 面试定位：可以表述为“将受控工具返回的 ChartSpec 交给 Plotly 渲染，并提供可追溯 CSV/Markdown/PNG 导出，针对 Kaleido 环境差异设计了明确的 Pillow 降级”；不能表述为模型可以直接生成前端代码，或所有机器都能稳定使用 Kaleido 原生 PNG。
 
 # 2026-07-31：完成 DataPilot 阶段 10 计划执行与中文报告

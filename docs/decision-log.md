@@ -1,5 +1,12 @@
 # 技术决策记录
 
+# 2026-07-31：记录 DataPilot 失败案例和演示截图边界
+
+- 新增 `projects/03-data-analysis-agent/docs/failure-cases.md`，记录 `qwen3:4b` 结构化计划不稳定、Kaleido 原生 PNG 导出失败、Ollama 服务异常、非法字段和危险 SQL、报告引用不存在步骤，以及外置浏览器系统文件选择器返回 `Not allowed` 等真实情况。
+- 保存 `projects/03-data-analysis-agent/docs/screenshots/datapilot-home.png`。该截图证明本地 Streamlit 首页可以打开，但不包含上传数据后的图表和报告；由于文件选择器阻断自动上传，没有伪造完整流程截图。
+- 处理原则：模型计划和报告失败时停止或安全降级；SQL 和工具参数失败时不执行；Kaleido 失败时改用 Pillow 并显示实际后端；外部环境阻断只记录为演示限制，不归因于应用代码。
+- 面试定位：可以表述为“为本地模型、数据查询和导出依赖设计可观察的失败处理和降级路径”；不能把当前首页截图描述为完整分析结果，也不能把 `qwen3:4b` 写成稳定规划模型。
+
 # 2026-07-31：完成 DataPilot 阶段 11 图表与导出
 
 - 新增 `src/visualization.py`，只接受 `ChartSpec` 结构化结果，渲染中文 Plotly 柱状图、折线图和饼图；空结果、负值饼图和过多类别不会让页面崩溃。

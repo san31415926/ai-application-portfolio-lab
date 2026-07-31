@@ -1,5 +1,14 @@
 # 技术决策记录
 
+## 2026-07-31：完成 DataPilot 阶段 7 Pydantic 工具契约与受控分析工具
+
+- 新增 `src/tools.py`，把数据概览、只读 SQL、分组统计、IQR 异常检测和图表配置拆成可独立调用的工具。
+- 输入约束：Pydantic 使用 `extra="forbid"` 拒绝未声明参数；字段名必须来自当前上传表；聚合函数、排序方向、图表类型、返回条数和 IQR 倍数均使用白名单或范围校验。
+- 工具边界：分组统计和异常检测只能生成固定 SQL 并交给 `ReadOnlyQueryEngine`；异常检测当前只实现可解释的 IQR 规则；图表工具只返回结构化配置和有限数据，不执行模型生成的 JavaScript，也不提前宣称支持 PNG 导出。
+- 审计记录：每次工具调用返回状态、耗时、输入摘要、结果摘要和错误码；只读 SQL 的输入摘要保存哈希和长度，不保存完整查询文本，减少将业务筛选值写入日志的风险。
+- 验证：完整 `unittest` 测试集 37 项通过，覆盖五类工具、未知字段、非数值聚合、Pydantic 多余参数、异常值发现和图表字段校验；`compileall` 与 `git diff --check` 通过。
+- 面试定位：可以表述为“用 Pydantic 固化 Agent 工具输入输出，并让工具只能调用白名单字段和已有只读查询引擎”；不能表述为已经完成 Ollama Agent 自动规划。
+
 ## 2026-07-31：完成 DataPilot 阶段 6 DuckDB 只读查询与 SQL 安全
 
 - 新增 `src/sql_guard.py` 和 `src/query_engine.py`，将上传的 DataFrame 注册为内存 DuckDB 的 `uploaded_data` 表；查询引擎统一负责校验、执行和执行记录。

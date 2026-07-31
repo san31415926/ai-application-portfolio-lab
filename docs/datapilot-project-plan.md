@@ -5,7 +5,7 @@
 - GitHub 仓库名：`datapilot-ai-data-analysis-agent`
 - 项目展示名：`DataPilot：本地自然语言数据分析 Agent`
 - 目标岗位：AI 应用开发工程师
-- 当前状态：阶段 6 已完成，阶段 7 待开始；已接入 SQL 查询和安全边界，尚未接入模型调用
+- 当前状态：阶段 7 已完成，阶段 8 待开始；已接入 SQL 查询、安全边界和受控工具，尚未接入模型调用
 - 当前负责人：独立开发
 - 参考项目：[`Shubhamsaboo/awesome-llm-apps`](https://github.com/Shubhamsaboo/awesome-llm-apps) 中的 `starter_ai_agents/ai_data_analysis_agent`
 - 本项目与 LearningHub 的区别：LearningHub 解决中文文档知识库检索和来源约束问答；DataPilot 解决结构化业务数据的自然语言分析和受控工具调用。
@@ -412,6 +412,7 @@ git diff --stat
 - [x] 实现数据读取和类型识别。
 - [x] 实现数据概览和质量检查。
 - [x] 实现 SQL 安全和受控查询引擎。
+- [x] 实现 Pydantic 工具契约和受控分析工具。
 - [ ] 接入本地模型和结构化 Agent。
 - [ ] 完成界面、测试、评估和简历材料。
 
@@ -425,9 +426,11 @@ git diff --stat
 
 阶段 6 验收记录：新增 `src/sql_guard.py` 和 `src/query_engine.py`，将上传后的 DataFrame 注册为内存 DuckDB 的 `uploaded_data` 表；只允许单条 SELECT，拒绝写入/配置语句、多语句、注释、外部数据源、其他表函数、未知表和非法字段；执行计划确认数据源只能是当前注册的 `PANDAS_SCAN`，执行时增加查询超时、最大返回行数和结果内存大小限制，并记录状态、SQL、耗时、行数和结果大小。Streamlit 工作台增加中文查询示例和执行结果区域，错误只展示安全的中文错误信息，不展示数据库堆栈；页面测试覆盖上传样例 CSV 后执行默认按地区汇总查询。新增配置限制测试、SQL 校验测试、查询引擎测试和页面流程测试后，完整测试集 30 项通过，`compileall` 和 `git diff --check` 通过；阶段 7 将继续实现 Pydantic 工具契约。
 
+阶段 7 验收记录：新增 `src/tools.py`，为数据概览、只读 SQL、分组统计、IQR 异常检测和图表配置定义 Pydantic 输入/输出模型；字段名、聚合函数、排序方向、图表类型、数值字段和返回条数均经过白名单或范围校验。工具统一返回结构化状态和 `ToolExecutionRecord`，SQL 输入只记录摘要哈希，结果按 JSON 兼容格式返回；异常检测使用固定 IQR 规则，图表工具只生成配置和数据，不生成 PNG。工具可以脱离 LLM 单独测试，未知字段会在进入查询引擎前拒绝；完整测试集 37 项通过，`compileall` 和 `git diff --check` 通过；阶段 8 将继续接入 Ollama 本地模型。
+
 ## 8. GitHub 状态
 
-独立 GitHub 仓库已经创建，并已同步到阶段 5 的代码和项目 README：
+独立 GitHub 仓库已经创建，并已同步到阶段 7 的代码和项目 README：
 
 ```text
 https://github.com/san31415926/datapilot-ai-data-analysis-agent

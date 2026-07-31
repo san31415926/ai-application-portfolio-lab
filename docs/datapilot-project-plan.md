@@ -5,7 +5,7 @@
 - GitHub 仓库名：`datapilot-ai-data-analysis-agent`
 - 项目展示名：`DataPilot：本地自然语言数据分析 Agent`
 - 目标岗位：AI 应用开发工程师
-- 当前状态：阶段 5 已完成，阶段 6 待开始；尚未接入 SQL 查询和模型调用
+- 当前状态：阶段 6 已完成，阶段 7 待开始；已接入 SQL 查询和安全边界，尚未接入模型调用
 - 当前负责人：独立开发
 - 参考项目：[`Shubhamsaboo/awesome-llm-apps`](https://github.com/Shubhamsaboo/awesome-llm-apps) 中的 `starter_ai_agents/ai_data_analysis_agent`
 - 本项目与 LearningHub 的区别：LearningHub 解决中文文档知识库检索和来源约束问答；DataPilot 解决结构化业务数据的自然语言分析和受控工具调用。
@@ -411,7 +411,7 @@ git diff --stat
 - [x] 构造中文电商样例数据。
 - [x] 实现数据读取和类型识别。
 - [x] 实现数据概览和质量检查。
-- [ ] 实现 SQL 安全和受控工具。
+- [x] 实现 SQL 安全和受控查询引擎。
 - [ ] 接入本地模型和结构化 Agent。
 - [ ] 完成界面、测试、评估和简历材料。
 
@@ -423,6 +423,8 @@ git diff --stat
 
 阶段 5 验收记录：新增 `src/data_quality.py` 并接入 Streamlit；输出行列数、缺失单元格、唯一值、重复行、重复标识、数值范围、字段角色和结构化质量问题；样例数据报告识别出 2 个缺失单元格、1 行重复记录和 1 个重复标识；完整测试集 17 项通过，`compileall` 通过。页面健康检查命令在本次执行中受到当前命令策略拦截，未将其记为本阶段新增验证结果；下一阶段进入 DuckDB 只读查询和 SQL 安全。
 
+阶段 6 验收记录：新增 `src/sql_guard.py` 和 `src/query_engine.py`，将上传后的 DataFrame 注册为内存 DuckDB 的 `uploaded_data` 表；只允许单条 SELECT，拒绝写入/配置语句、多语句、注释、外部数据源、其他表函数、未知表和非法字段；执行计划确认数据源只能是当前注册的 `PANDAS_SCAN`，执行时增加查询超时、最大返回行数和结果内存大小限制，并记录状态、SQL、耗时、行数和结果大小。Streamlit 工作台增加中文查询示例和执行结果区域，错误只展示安全的中文错误信息，不展示数据库堆栈；页面测试覆盖上传样例 CSV 后执行默认按地区汇总查询。新增配置限制测试、SQL 校验测试、查询引擎测试和页面流程测试后，完整测试集 30 项通过，`compileall` 和 `git diff --check` 通过；阶段 7 将继续实现 Pydantic 工具契约。
+
 ## 8. GitHub 状态
 
 独立 GitHub 仓库已经创建，并已同步到阶段 5 的代码和项目 README：
@@ -431,7 +433,7 @@ git diff --stat
 https://github.com/san31415926/datapilot-ai-data-analysis-agent
 ```
 
-阶段 5 的计划、决策记录和连续性文档也已同步到作品集总仓库：
+阶段 6 的计划、决策记录和连续性文档也已同步到作品集总仓库：
 
 ```text
 https://github.com/san31415926/ai-application-portfolio-lab

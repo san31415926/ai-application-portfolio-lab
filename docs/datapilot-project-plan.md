@@ -5,7 +5,7 @@
 - GitHub 仓库名：`datapilot-ai-data-analysis-agent`
 - 项目展示名：`DataPilot：本地自然语言数据分析 Agent`
 - 目标岗位：AI 应用开发工程师
-- 当前状态：阶段 11 已完成，阶段 15 已补充失败案例记录和真实首页截图；完整上传后的结果截图及阶段 16 独立复述仍待完成。已接入计划执行、工具结果展示、基于真实证据的中文报告、Plotly 图表、CSV/PNG/Markdown 导出和 20 条固定中文评估集
+- 当前状态：阶段 11 已完成，阶段 15 已补充失败案例记录和真实首页截图；客户界面文案已清理，并新增 10 组 CSV/XLSX 练习数据中心；完整上传后的结果截图及阶段 16 独立复述仍待完成。已接入计划执行、工具结果展示、基于真实证据的中文报告、Plotly 图表、CSV/PNG/Markdown 导出和 20 条固定中文评估集
 - 当前负责人：独立开发
 - 参考项目：[`Shubhamsaboo/awesome-llm-apps`](https://github.com/Shubhamsaboo/awesome-llm-apps) 中的 `starter_ai_agents/ai_data_analysis_agent`
 - 本项目与 LearningHub 的区别：LearningHub 解决中文文档知识库检索和来源约束问答；DataPilot 解决结构化业务数据的自然语言分析和受控工具调用。
@@ -423,6 +423,8 @@ git diff --stat
 - [x] 完成界面、测试、评估和阶段 15 的基础文档材料。
 - [x] 记录模型、依赖、安全校验和演示环境的真实失败案例。
 - [x] 保存真实 Streamlit 首页截图，并明确截图未覆盖的范围。
+- [x] 清理客户页面中的内部阶段、待办和开发过程文案。
+- [x] 新增 10 组中文练习数据，每组同时提供 CSV 和 XLSX，并接入页面预览、下载和直接分析。
 - [ ] 使用外置浏览器完成上传样例后的完整演示截图。
 - [ ] 完成阶段 16 的独立复述和简历准入问答。
 
@@ -447,6 +449,8 @@ git diff --stat
 阶段 11 验收记录：新增 `src/visualization.py`，只接受已校验的 `ChartSpec`，渲染中文 Plotly 柱状图、折线图和饼图；空结果会显示空状态，饼图遇到负值会提示切换图表类型，不把负值伪装成占比。新增 `src/exporters.py`，提供带 UTF-8 BOM 的 CSV 和包含报告正文、工具证据、结果表与审计摘要的 Markdown 导出。Streamlit 页面支持展示计划中的图表，也支持从成功工具返回的结构化表格手动选择图表类型和字段；图表 CSV 立即可下载，PNG 按需生成。当前 Windows 环境中的 Plotly 5.24.1 + Kaleido 0.2.1 仍会启动失败，因此 PNG 优先尝试 Plotly，失败后使用 Pillow 生成中文静态 PNG，并在页面明确提示实际后端。新增 `data/evaluation_cases.json`、`src/evaluation.py` 和 `scripts/run_evaluation.py`，提供覆盖 8 个分类的 20 个中文固定评估问题，并按工具、字段、拒答状态和图表类型评分。完整测试集 72 项通过，`compileall`、`git diff --check` 通过，Streamlit `/_stcore/health` 返回 `200 ok`，评估集结构检查脚本通过。
 
 阶段 15 文档记录：新增 `projects/03-data-analysis-agent/docs/failure-cases.md`，记录 `qwen3:4b` 结构化计划不稳定、Kaleido `JSONDecodeError`、Ollama 服务异常、非法 SQL 拦截、报告引用校验和外置浏览器文件选择器限制。保存 `projects/03-data-analysis-agent/docs/screenshots/datapilot-home.png` 作为真实首页截图；该截图不包含上传后的图表和报告，完整流程截图仍待外置浏览器手动上传后补充。
+
+客户界面与练习数据记录：删除工作台中的内部阶段验收文案和下一阶段提示；新增 10 组固定种子的中文合成练习数据，每组同时写入 CSV 和 XLSX，共 20 个文件。页面提供数据目录、预览、建议问题、格式下载和直接分析入口；外置 Edge 实测通过，完整测试集 76 项通过。
 
 ## 8. GitHub 状态
 

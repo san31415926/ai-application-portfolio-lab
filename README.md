@@ -57,6 +57,23 @@ projects/02-rag-fastapi-service/
 - 多步骤研究报告生成
 - AI 应用工程化：配置、日志、README、部署、演示
 
+## DataPilot
+
+DataPilot 是一个面向 CSV/XLSX 文件的本地自然语言数据分析助手。用户可以使用中文提问，系统由本地 Ollama 模型识别分析意图，再经过 Pydantic、字段白名单和只读 SQL 校验，执行 DuckDB 统计并生成中文报告、图表和可下载结果。
+
+核心能力包括：
+
+- CSV/XLSX 导入、字段识别和数据质量检查
+- 中文自然语言分析、分组统计、趋势分析和异常检测
+- Ollama 本地模型检测、选择和真实调用
+- DuckDB 只读查询、SQL 安全校验和结果限制
+- Plotly 图表以及 CSV、Markdown、PNG 导出
+- 10 组中文练习数据和 83 个单元测试
+
+项目目录和完整运行说明：[`projects/03-data-analysis-agent/README.md`](projects/03-data-analysis-agent/README.md)
+
+在项目目录中可以直接双击 `start_datapilot.bat` 启动；PowerShell 启动脚本会自动检查虚拟环境、依赖、Ollama 和本地模型。
+
 ## 项目路线图
 
 | 阶段 | 项目 | 状态 | 简历价值 |
@@ -64,7 +81,7 @@ projects/02-rag-fastapi-service/
 | 1 | PDF 对话 / 基础 RAG | 已完成早期原型 | 理解 PDF 读取和基础检索 |
 | 2 | LearningHub | MVP 可运行 | 展示 FastAPI、双本地模型、向量检索、来源约束生成、拒答和笔记管理 |
 | 3 | Chroma 向量库升级 | 下一步 | 从内存向量检索升级为可持久化 Notebook RAG |
-| 4 | DataPilot 数据分析 Agent | 工作台可用，练习数据中心已接入 | 面向业务数据的本地自然语言分析助手 |
+| 4 | DataPilot 数据分析助手 | 已完成本地验收 | 面向业务数据的本地自然语言分析助手 |
 
 ## 仓库结构
 
